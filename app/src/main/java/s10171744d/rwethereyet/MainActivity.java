@@ -24,8 +24,6 @@ import s10171744d.rwethereyet.network.Network;
 public class MainActivity extends AppCompatActivity {
 
     TextView responseView;
-    static final String API_KEY = "qYVYhFVvQZuDj2KI3w8lBw==";
-    static final String API_URL = "http://datamall2.mytransport.sg/ltaodataservice/LTABusService?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +36,32 @@ public class MainActivity extends AppCompatActivity {
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Response<BusRouterServiceResponse> response = Network.getBusRouterService().listRepos("166").execute();
-                    BusRouterServiceResponse yay = response.body();
-//                    yay.getRouteOne();
-                    responseView.setText(yay.getRouteOne().getStops()[0]);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                new RetrieveFeedTask().execute();
             }
         });
+    }
+    class RetrieveFeedTask extends AsyncTask<Void, Void, String> {
+
+        private Exception exception;
+
+        protected void onPreExecute() {
+        }
+
+        protected String doInBackground(Void... urls) {
+            try {
+                Response<BusRouterServiceResponse> response =
+                        Network.getBusRouterService().listRepos("166").execute();
+                BusRouterServiceResponse yay = response.body();
+                return yay.getRouteOne().getStops()[0];
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        protected void onPostExecute(String response) {
+            responseView.setText(response);
+        }
     }
 }
