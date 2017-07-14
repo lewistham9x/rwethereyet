@@ -8,18 +8,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class BusStop {
 
-    @SerializedName("BusStopCode") /** helps identify which value within the JSON file to set "code" to **/
+    @SerializedName("no") /** helps identify which value within the JSON file to set "code" to **/
     private String code;
 
-    @SerializedName("RoadName")
-    private String roadName;
+    @SerializedName("name")
+    private String name;
 
-    @SerializedName("Description")
-    private String description;
-
-    @SerializedName("Latitude")
+    @SerializedName("lat")
     private double lat;
 
-    @SerializedName("Longitude")
+    @SerializedName("lng")
     private double lon;
 }
