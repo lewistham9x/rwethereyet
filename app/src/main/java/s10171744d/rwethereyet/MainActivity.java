@@ -48,8 +48,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
                     {
-                        BusStop selected = serviceBusStopList.get(10); //temp test like if bus stop alr selected
-                        responseView.setText("Code: "+selected.getCode()+"\nName: "+selected.getName()+"\nLat: "+selected.getLat()+"\nLong: "+selected.getLon());//lists in java uses .get(index) to get index instead of []
+                        String listofstops = "166 bus stop route details";
+                        for (BusStop bs : serviceBusStopList)
+                        {
+                            listofstops+="\n\n"+"Code: "+bs.getCode()+"\nName: "+bs.getName()+"\nLat: "+bs.getLat()+"\nLong: "+bs.getLon();
+                        }
+
+                        //BusStop selected = serviceBusStopList.get(10); //temp test like if bus stop alr selected
+                        //responseView.setText("Code: "+selected.getCode()+"\nName: "+selected.getName()+"\nLat: "+selected.getLat()+"\nLong: "+selected.getLon());//lists in java uses .get(index) to get index instead of []
+                        responseView.setText(listofstops);
                     }
                 });
             }
