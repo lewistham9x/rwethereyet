@@ -1,33 +1,24 @@
 package s10171744d.rwethereyet;
 
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import s10171744d.rwethereyet.model.BusRouterServiceResponse;
 import s10171744d.rwethereyet.model.BusStop;
 import s10171744d.rwethereyet.network.Network;
+import s10171744d.rwethereyet.util.SingleArgumentCallback;
 
 public class MainActivity extends AppCompatActivity {
-
+    List<BusStop> BusStopList;
     TextView responseView;
 
     @Override
@@ -37,102 +28,72 @@ public class MainActivity extends AppCompatActivity {
 
         responseView = (TextView) findViewById(R.id.responseView);
 
-        Button queryButton = (Button) findViewById(R.id.queryButton);
-        new initBusStopList().execute(); //convert all bus stops from json into bus stop objects
-        //Network.getBusRouterService().listAllStops().enqueue(new Callback<List<BusStop>>() {
-        //    @Override
-        //    public void onResponse(Call<List<BusStop>> call, Response<List<BusStop>> response) {
-        //        response.body();
-        //    }
-//
-        //    @Override
-        //    public void onFailure(Call<List<BusStop>> call, Throwable t) {
-//
-        //    }
-        //});
+        final Button queryButton = (Button) findViewById(R.id.queryButton);
+
+        Network.getBusRouterService().listAllStops().enqueue(new Callback<List<BusStop>>() {
+            @Override
+            public void onResponse(Call<List<BusStop>> call, Response<List<BusStop>> response) {
+                BusStopList = response.body();//add all the bus stops in singapore as objects to the list
+            }
+            @Override
+            public void onFailure(Call<List<BusStop>> call, Throwable t) {
+
+            }
+        });
 
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new RetrieveBusStopIDs().execute("166","1");
+                getBusStopList("166", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
+                    @Override
+                    public void onComplete(List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
+                    {
+                        BusStop selected = serviceBusStopList.get(10); //temp test like if bus stop alr selected
+                        responseView.setText("Code: "+selected.getCode()+"\nName: "+selected.getName()+"\nLat: "+selected.getLat()+"\nLong: "+selected.getLon());//lists in java uses .get(index) to get index instead of []
+                    }
+                });
             }
         });
     }
-
-    private List<BusStop> getBusStopList(String BusService) //returns list of bus stops for service
+    private void getBusStopList(String busService, final int routeNo, final SingleArgumentCallback<List<BusStop>> callback) //returns list of bus stops for service
     {
-        List<BusStop> busStopsForsService = new ArrayList<>();
-        new RetrieveBusStopIDs() {
-            @Override
-            protected void onPostExecute(String[] result) { //override so can scan the whole list and add the bus stop objects to the list based on the stringarray
-                for (String s : result)
-                {
+       Network.getBusRouterService().listRepos(busService).enqueue(new Callback<BusRouterServiceResponse>() {//enqueue allows for usage of own callback
+           @Override
+           public void onResponse(Call<BusRouterServiceResponse> call, Response<BusRouterServiceResponse> response) {
+               BusRouterServiceResponse yay = response.body();
+               String[] result = new String[0];
 
-                }
-            }
-        }.execute(BusService,"1");
+               switch (routeNo) { //neater way for if else
+                   case 1:
+                       result = yay.getRouteOne().getStops();
+                   break;
+                   case 2:
+                       result = yay.getRouteTwo().getStops();
+                   break;
+                   case 3:
+                       result = yay.getRouteThree().getStops();
+                   break;
+               }
 
-    }
+               List<BusStop> busStopsForService = new ArrayList<>();
+               for (String s : result)
+               {
+                   for (BusStop bs : BusStopList)
+                   {
+                       if (bs.getCode().equals(s))
+                       {
+                           busStopsForService.add(bs);
+                           break;
+                       }
+                   }
+               }
+               callback.onComplete(busStopsForService); //when retrieved network info "return" the busStopsForServicec
+           }
 
-    class RetrieveBusStopIDs extends AsyncTask<String, Void, String[]> {//params, progress,result
+           @Override
+           public void onFailure(Call<BusRouterServiceResponse> call, Throwable t) {
 
-        private Exception exception;
-
-        protected void onPreExecute() {
-        }
-
-        protected String[] doInBackground(String... args) { //returns array of strings of bus stop ids
-            try {
-                Response<BusRouterServiceResponse> response =
-                        Network.getBusRouterService().listRepos(args[0]).execute();
-                BusRouterServiceResponse yay = response.body();
-
-                if (args[1].equals("1"))
-                {
-                    return yay.getRouteOne().getStops();
-                }
-                else if (args[1]=="2")
-                {
-                    return yay.getRouteTwo().getStops();
-                }
-                else
-                {
-                    return yay.getRouteThree().getStops();
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-            }
-
-        @Override
-        protected void onPostExecute(String[] strings) {
-            super.onPostExecute(strings);
-        }
-    }
-
-
-    class initBusStopList extends AsyncTask<Void, Void, List<BusStop>> {
-
-        private Exception exception;
-
-        protected void onPreExecute() {
-        }
-
-        protected List<BusStop> doInBackground(Void... urls) {
-            try {
-                List<BusStop> BusStopList = Network.getBusRouterService().listAllStops().execute().body();
-                return BusStopList;
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        protected void onPostExecute(List<BusStop> response) {
-            List<BusStop> = response;
-        }
+           }
+       });
     }
 }

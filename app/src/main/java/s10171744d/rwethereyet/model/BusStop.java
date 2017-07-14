@@ -19,4 +19,20 @@ public class BusStop {
 
     @SerializedName("lng")
     private double lon;
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
 }

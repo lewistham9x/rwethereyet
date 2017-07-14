@@ -16,5 +16,6 @@ public interface BusRouterService {
     @GET("data/2/bus-services/{id}.json")
     Call<BusRouterServiceResponse> listRepos(@Path("id") String user);
 
+    @GET("data/2/bus-stops.json")
     Call<List<BusStop>> listAllStops(); //no need for wrapping
 }
