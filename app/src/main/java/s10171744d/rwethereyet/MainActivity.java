@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getBusStopList(busServiceNo.getText()+"", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
                     @Override
-                    public void onComplete(List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
+                    public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
                     {
                         busRouteListView = (ListView)findViewById(R.id.busRouteListView);
                         BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(serviceBusStopList);
@@ -59,10 +59,12 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
                             {
-                                Log.d("asf",position+"");
+                                String busstopname = serviceBusStopList.get(position).getName();
+                                Log.d("asf",busstopname);
                             }
                         });
                     }
+
                 });
             }
         });
@@ -70,41 +72,55 @@ public class MainActivity extends AppCompatActivity {
     private void getBusStopList(String busService, final int routeNo, final SingleArgumentCallback<List<BusStop>> callback) //returns list of bus stops for service
     {
        Network.getBusRouterService().listRepos(busService).enqueue(new Callback<BusRouterServiceResponse>() {//enqueue allows for usage of own callback
+           List<BusStop> busStopsForService = new ArrayList<>();
            @Override
            public void onResponse(Call<BusRouterServiceResponse> call, Response<BusRouterServiceResponse> response) {
-               BusRouterServiceResponse yay = response.body();
-               String[] result = new String[0];
-
-               switch (routeNo) { //neater way for if else
-                   case 1:
-                       result = yay.getRouteOne().getStops();
-                   break;
-                   case 2:
-                       result = yay.getRouteTwo().getStops();
-                   break;
-                   case 3:
-                       result = yay.getRouteThree().getStops();
-                   break;
-               }
-
-               List<BusStop> busStopsForService = new ArrayList<>();
-               for (String s : result)
+               if (response.isSuccessful()) //if response is successful (such a bus stop exists)
                {
-                   for (BusStop bs : BusStopList)
-                   {
-                       if (bs.getCode().equals(s))
-                       {
-                           busStopsForService.add(bs);
+                   BusRouterServiceResponse yay = response.body();
+                   String[] result = new String[0];
+
+                   switch (routeNo) { //neater way for if else
+                       case 1:
+                           result = yay.getRouteOne().getStops();
                            break;
+                       case 2:
+                           result = yay.getRouteTwo().getStops();
+                           break;
+                       case 3:
+                           result = yay.getRouteThree().getStops();
+                           break;
+                   }
+
+                   for (String s : result)
+                   {
+                       for (BusStop bs : BusStopList)
+                       {
+                           if (bs.getCode().equals(s))
+                           {
+                               busStopsForService.add(bs);
+                               break;
+                           }
                        }
                    }
                }
-               callback.onComplete(busStopsForService); //when retrieved network info "return" the busStopsForServicec
+               else
+               {
+                   //create error bus stop object for non existent bus service
+                   BusStop error = new BusStop();
+                   error.error(1);
+                   busStopsForService.add(error);
+               }
+               callback.onComplete(busStopsForService); //when retrieved network info "return" the busStopsForService
            }
 
            @Override
            public void onFailure(Call<BusRouterServiceResponse> call, Throwable t) {
-
+               //create error bus stop object for no connection
+               BusStop error = new BusStop();
+               error.error(2);
+               busStopsForService.add(error);
+               callback.onComplete(busStopsForService); //when retrieved network info "return" the busStopsForService
            }
        });
     }

@@ -44,10 +44,27 @@ public class BusRouteListViewAdapter extends BaseAdapter{
         TextView lat = (TextView)rowView.findViewById(R.id.lat);
         TextView lon = (TextView)rowView.findViewById(R.id.lon);
         BusStop bs = busRoute.get(position);
-        code.setText("Code: " + bs.getCode());
-        name.setText("Name: " + bs.getName());
-        lat.setText("Latitude: " + bs.getLat());
-        lon.setText("Longitude: " + bs.getLon());
+        if (bs.getCode().equals("#ERROR1")) //error handling for non existent bus stop
+        {
+            code.setText("Bus stop does not exist");
+            name.setVisibility(View.GONE);
+            lat.setVisibility(View.GONE);
+            lon.setVisibility(View.GONE);
+        }
+        else if (bs.getCode().equals("#ERROR2")) //error handling for non existent bus stop
+        {
+            code.setText("A connection error occured");
+            name.setVisibility(View.GONE);
+            lat.setVisibility(View.GONE);
+            lon.setVisibility(View.GONE);
+        }
+        else
+        {
+            code.setText("Code: " + bs.getCode());
+            name.setText("Name: " + bs.getName());
+            lat.setText("Latitude: " + bs.getLat());
+            lon.setText("Longitude: " + bs.getLon());
+        }
         return rowView;
     }
 }

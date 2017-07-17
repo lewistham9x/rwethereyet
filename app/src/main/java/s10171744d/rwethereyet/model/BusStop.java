@@ -35,4 +35,13 @@ public class BusStop {
     public double getLon() {
         return lon;
     }
+
+    //method is needed to create special bus stops (like bus stop to indicate error)
+    public void error(int error) //create error bus stop object for non existent bus stop
+    {
+        code = "#ERROR"+error;
+        name = "";
+        lat = 0;
+        lon = 0;
+    }
 }
