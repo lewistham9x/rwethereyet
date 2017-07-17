@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import s10171744d.rwethereyet.util.SingleArgumentCallback;
 public class MainActivity extends AppCompatActivity {
     List<BusStop> BusStopList;
     ListView busRouteListView;
+    EditText busServiceNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final Button queryButton = (Button) findViewById(R.id.queryButton);
+        final EditText busServiceNo = (EditText) findViewById(R.id.txtServiceNo);
 
         Network.getBusRouterService().listAllStops().enqueue(new Callback<List<BusStop>>() {
             @Override
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getBusStopList("979", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
+                getBusStopList(busServiceNo.getText()+"", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
                     @Override
                     public void onComplete(List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
                     {
