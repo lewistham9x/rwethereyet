@@ -35,21 +35,28 @@
             tools:layout_editor_absoluteY="447dp" />
     </LinearLayout>
 
-
-    <ToggleButton
-        android:id="@+id/btnToggleRoute"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:text="Change route"
-        android:textOff="Route 1"
-        android:textOn="Route 2" />
-
-
-    <ListView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="80"
-        android:id="@+id/busRouteListView"></ListView>
+        android:orientation="horizontal">
+
+        <ListView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="100"
+            android:id="@+id/busRouteListView1"></ListView>
+        <ListView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:id="@+id/busRouteListView2"></ListView>
+        <ListView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:id="@+id/busRouteListView3"></ListView>
+    </LinearLayout>
+
 
 </LinearLayout>
