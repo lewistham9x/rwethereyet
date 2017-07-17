@@ -7,9 +7,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
     List<BusStop> BusStopList;
     ListView busRouteListView;
     EditText busServiceNo;
+    ToggleButton btnToggleRoute;
+
+    Integer routeno;
+
     List<BusStop> selectedServiceBusStopList;
 
     @Override
@@ -36,10 +42,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        routeno=1;
+
         final Button queryButton = (Button) findViewById(R.id.queryButton);
         final EditText busServiceNo = (EditText) findViewById(R.id.txtServiceNo);
         busRouteListView = (ListView)findViewById(R.id.busRouteListView);
+        btnToggleRoute = (ToggleButton)findViewById(R.id.btnToggleRoute);
+
         selectedServiceBusStopList = new ArrayList<>();
+
 
         Network.getBusRouterService().listAllStops().enqueue(new Callback<List<BusStop>>() {
             @Override
@@ -52,24 +63,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btnToggleRoute.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    routeno = 2;
+                }
+                else
+                {
+                    routeno = 1;
+                }
+            }
+        });
+
+
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getBusStopList(busServiceNo.getText()+"", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
+                getBusStopList(busServiceNo.getText()+"", routeno, new SingleArgumentCallback<List<BusStop>>() {//call the callback
                     @Override
                     public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
                     {
-                        selectedServiceBusStopList.addAll(serviceBusStopList);//add busroute 1 bus stops to list
+                        selectedServiceBusStopList = serviceBusStopList;//add busroute 1 bus stops to list
                     }
                 });
-                getBusStopList(busServiceNo.getText()+"", 2, new SingleArgumentCallback<List<BusStop>>() {//call the callback
-                    @Override
-                    public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
-                    {
-                        selectedServiceBusStopList.addAll(serviceBusStopList);//add busroute 2 bus stops to list
-                    }
-                });
-
                 BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(selectedServiceBusStopList);
                 busRouteListView.setAdapter(adapter);
                 busRouteListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){

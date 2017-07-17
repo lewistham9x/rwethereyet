@@ -36,25 +36,15 @@
     </LinearLayout>
 
 
-    <LinearLayout
+    <ToggleButton
+        android:id="@+id/btnToggleRoute"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
-        android:weightSum="100"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/btnRoute1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:text="Route1" />
-        <Button
-            android:id="@+id/btnRoute2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:text="Route2" />
-    </LinearLayout>
+        android:text="Change route"
+        android:textOff="Route 1"
+        android:textOn="Route 2" />
+
 
     <ListView
         android:layout_width="match_parent"
