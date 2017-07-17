@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,14 +21,17 @@ import s10171744d.rwethereyet.util.SingleArgumentCallback;
 
 public class MainActivity extends AppCompatActivity {
     List<BusStop> BusStopList;
-    TextView responseView;
+    ListView busRouteListView;
+    EditText busServiceNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        responseView = (TextView) findViewById(R.id.responseView);
+        busRouteListView = (ListView) findViewById(R.id.busRouteListView);
+        busServiceNo = (EditText) findViewById(R.id.txtBusServiceNo);
+
 
         final Button queryButton = (Button) findViewById(R.id.queryButton);
 
@@ -44,19 +49,13 @@ public class MainActivity extends AppCompatActivity {
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getBusStopList("166", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
+                getBusStopList("979", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
                     @Override
                     public void onComplete(List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
                     {
-                        String listofstops = "166 bus stop route details";
-                        for (BusStop bs : serviceBusStopList)
-                        {
-                            listofstops+="\n\n"+"Code: "+bs.getCode()+"\nName: "+bs.getName()+"\nLat: "+bs.getLat()+"\nLong: "+bs.getLon();
-                        }
-
-                        //BusStop selected = serviceBusStopList.get(10); //temp test like if bus stop alr selected
-                        //responseView.setText("Code: "+selected.getCode()+"\nName: "+selected.getName()+"\nLat: "+selected.getLat()+"\nLong: "+selected.getLon());//lists in java uses .get(index) to get index instead of []
-                        responseView.setText(listofstops);
+                        busRouteListView = (ListView)findViewById(R.id.busRouteListView);
+                        BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(serviceBusStopList);
+                        busRouteListView.setAdapter(adapter);
                     }
                 });
             }
