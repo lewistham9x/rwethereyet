@@ -1,6 +1,7 @@
 package s10171744d.rwethereyet;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +12,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     List<BusStop> BusStopList;
     ListView busRouteListView;
     EditText busServiceNo;
+    List<BusStop> selectedServiceBusStopList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
         final Button queryButton = (Button) findViewById(R.id.queryButton);
         final EditText busServiceNo = (EditText) findViewById(R.id.txtServiceNo);
+        busRouteListView = (ListView)findViewById(R.id.busRouteListView);
+        selectedServiceBusStopList = new ArrayList<>();
 
         Network.getBusRouterService().listAllStops().enqueue(new Callback<List<BusStop>>() {
             @Override
@@ -52,20 +59,28 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
                     {
-                        busRouteListView = (ListView)findViewById(R.id.busRouteListView);
-                        BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(serviceBusStopList);
-                        busRouteListView.setAdapter(adapter);
-                        busRouteListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-                            {
-                                String busstopname = serviceBusStopList.get(position).getName();
-                                Log.d("asf",busstopname);
-                            }
-                        });
+                        selectedServiceBusStopList.addAll(serviceBusStopList);//add busroute 1 bus stops to list
                     }
-
                 });
+                getBusStopList(busServiceNo.getText()+"", 2, new SingleArgumentCallback<List<BusStop>>() {//call the callback
+                    @Override
+                    public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
+                    {
+                        selectedServiceBusStopList.addAll(serviceBusStopList);//add busroute 2 bus stops to list
+                    }
+                });
+
+                BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(selectedServiceBusStopList);
+                busRouteListView.setAdapter(adapter);
+                busRouteListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+                    {
+                        String busstopname = selectedServiceBusStopList.get(position).getName();
+                        Log.d("asf",busstopname);
+                    }
+                });
+
             }
         });
     }
