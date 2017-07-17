@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -70,38 +71,54 @@ public class MainActivity extends AppCompatActivity {
 
                 if (routecount == 1)
                 {
-
+                    displayRouteList(1,busRouteListView1);
                 }
                 else if (routecount == 2)
                 {
+                    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            50
+                    );
 
+                    busRouteListView1.setLayoutParams(param);
+                    displayRouteList(1,busRouteListView1);
+                    busRouteListView2.setLayoutParams(param);
+                    displayRouteList(2,busRouteListView2);
                 }
                 else if (routecount == 3)
                 {
 
                 }
-
-                getBusStopList(busServiceNo.getText()+"", routeno, new SingleArgumentCallback<List<BusStop>>() {//call the callback
-                    @Override
-                    public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
-                    {
-                        selectedServiceBusStopList = serviceBusStopList;//add busroute 1 bus stops to list
-                    }
-                });
-                BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(selectedServiceBusStopList);
-                busRouteListView1.setAdapter(adapter);
-                busRouteListView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-                    {
-                        String busstopname = selectedServiceBusStopList.get(position).getName();
-                        Log.d("asf",busstopname);
-                    }
-                });
-
+                else
+                {
+                    //lol idk maybe can handle errors here??
+                }
             }
         });
     }
+
+    private void displayRouteList(Integer routeno,ListView busRouteListView)
+    {
+        getBusStopList(busServiceNo.getText()+"", routeno, new SingleArgumentCallback<List<BusStop>>() {//call the callback
+            @Override
+            public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
+            {
+                selectedServiceBusStopList = serviceBusStopList;//add busroute 1 bus stops to list
+            }
+        });
+        BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(selectedServiceBusStopList);
+        busRouteListView.setAdapter(adapter);
+        busRouteListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+            {
+                String busstopname = selectedServiceBusStopList.get(position).getName();
+                Log.d("asf",busstopname);
+            }
+        });
+    }
+
     private void getBusStopList(String busService, final int routeNo, final SingleArgumentCallback<List<BusStop>> callback) //returns list of bus stops for service
     {
         Network.getBusRouterService().listRepos(busService).enqueue(new Callback<BusRouterServiceResponse>() {//enqueue allows for usage of own callback
