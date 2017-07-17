@@ -2,7 +2,9 @@ package s10171744d.rwethereyet;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -53,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
                         busRouteListView = (ListView)findViewById(R.id.busRouteListView);
                         BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(serviceBusStopList);
                         busRouteListView.setAdapter(adapter);
+                        busRouteListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+                            {
+                                Log.d("asf",position+"");
+                            }
+                        });
                     }
                 });
             }
