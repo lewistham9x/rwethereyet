@@ -2,24 +2,18 @@ package s10171744d.rwethereyet;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.ToggleButton;
+
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +21,6 @@ import retrofit2.Response;
 import s10171744d.rwethereyet.model.BusRouterServiceResponse;
 import s10171744d.rwethereyet.model.BusStop;
 import s10171744d.rwethereyet.network.Network;
-import s10171744d.rwethereyet.util.DataHolder;
 import s10171744d.rwethereyet.util.SingleArgumentCallback;
 
 public class MainActivity extends AppCompatActivity {
@@ -96,12 +89,14 @@ public class MainActivity extends AppCompatActivity {
                                     String busstopname = serviceBusStopList.get(position).getName();
                                     Log.d("asf",busstopname);//pass through the serviceBusStopList
 
-                                    //DataHolder dh = new DataHolder(); //not sure if its done this way
-                                    //dh.setData(serviceBusStopList); //transfer bus route over to busjourney by storing into class
 
                                     Intent intent = new Intent(MainActivity.this, BusJourney.class);
 
-                                    intent.putExtra("busStopIndex", position);
+                                    Bundle b = new Bundle();
+                                    b.putParcelableArrayList("selectedBusRoute", serviceBusStopList);
+                                    b.putInt("index", _index);
+                                    i.putExtras(b);
+
 
 
                                     startActivity(intent);
@@ -143,13 +138,13 @@ public class MainActivity extends AppCompatActivity {
                                 {
                                     String busstopname = serviceBusStopList.get(position).getName();
                                     Log.d("asf",busstopname);//pass through the serviceBusStopList
+
+                                    //Bundle bundle = new Bundle();
+                                    //bundle.putParcelable("busJourney", Parcels.wrap(new SelectedBusJourney(serviceBusStopList,position)));
+
                                     Intent intent = new Intent(MainActivity.this, BusJourney.class);
 
-                                    intent.putExtra("busStopIndex", position);
-
-
                                     startActivity(intent);
-
                                 }
                             });
                         }
@@ -167,13 +162,13 @@ public class MainActivity extends AppCompatActivity {
                                 {
                                     String busstopname = serviceBusStopList.get(position).getName();
                                     Log.d("asf",busstopname);//pass through the serviceBusStopList
+
+                                    //Bundle bundle = new Bundle();
+                                    //bundle.putParcelable("busJourney", Parcels.wrap(new SelectedBusJourney(serviceBusStopList,position)));
+
                                     Intent intent = new Intent(MainActivity.this, BusJourney.class);
 
-                                    intent.putExtra("busStopIndex", position);
-
-
                                     startActivity(intent);
-
                                 }
                             });
                         }
