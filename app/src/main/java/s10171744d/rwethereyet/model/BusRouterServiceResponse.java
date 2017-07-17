@@ -13,18 +13,11 @@ public class BusRouterServiceResponse {
     @SerializedName("2")
     private BusRouterRoute routeTwo;
 
-    @SerializedName("3")
-    private BusRouterRoute routeThree;
-
     public BusRouterRoute getRouteOne() {
         return routeOne;
     }
 
     public BusRouterRoute getRouteTwo() {
         return routeTwo;
-    }
-
-    public BusRouterRoute getRouteThree() {
-        return routeThree;
     }
 }

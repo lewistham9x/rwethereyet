@@ -51,11 +51,6 @@
             android:layout_height="match_parent"
             android:layout_weight="0"
             android:id="@+id/busRouteListView2"></ListView>
-        <ListView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:id="@+id/busRouteListView3"></ListView>
     </LinearLayout>
 
 
