@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="70"
             android:hint="Bus Service Number"
-            android:singleLine="true"
             android:inputType = "number"/>
 
         <Button

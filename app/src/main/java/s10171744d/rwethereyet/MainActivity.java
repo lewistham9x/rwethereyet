@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getBusStopList("979", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
+                getBusStopList(busServiceNo.getText().toString(), 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
                     @Override
                     public void onComplete(List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
                     {
@@ -76,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
                    case 2:
                        result = yay.getRouteTwo().getStops();
                    break;
-                   case 3:
-                       result = yay.getRouteThree().getStops();
-                   break;
+                   //case 3:
+                   //    result = yay.getRouteThree().getStops();
+                   //break;
                }
 
                List<BusStop> busStopsForService = new ArrayList<>();
