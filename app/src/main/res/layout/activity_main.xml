@@ -15,11 +15,15 @@
         android:layout_height="0dp"
         android:layout_weight="10"
         android:orientation="horizontal">
+
         <EditText
             android:id="@+id/txtServiceNo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="70"/>
+            android:layout_weight="70"
+            android:hint="Enter Bus Service No."
+            android:inputType="number"
+            android:singleLine="true" />
 
         <Button
             android:id="@+id/queryButton"
