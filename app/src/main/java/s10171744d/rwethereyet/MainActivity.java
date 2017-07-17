@@ -20,6 +20,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import s10171744d.rwethereyet.model.BusRouterServiceResponse;
 import s10171744d.rwethereyet.model.BusStop;
+import s10171744d.rwethereyet.model.Control;
 import s10171744d.rwethereyet.network.Network;
 import s10171744d.rwethereyet.util.SingleArgumentCallback;
 
@@ -89,15 +90,10 @@ public class MainActivity extends AppCompatActivity {
                                     String busstopname = serviceBusStopList.get(position).getName();
                                     Log.d("asf",busstopname);//pass through the serviceBusStopList
 
+                                    Control.busRoute = serviceBusStopList;
+                                    Control.selectedBusIndex = position;
 
                                     Intent intent = new Intent(MainActivity.this, BusJourney.class);
-
-                                    Bundle b = new Bundle();
-                                    b.putParcelableArrayList("selectedBusRoute", serviceBusStopList);
-                                    b.putInt("index", _index);
-                                    i.putExtras(b);
-
-
 
                                     startActivity(intent);
                                 }
@@ -139,8 +135,8 @@ public class MainActivity extends AppCompatActivity {
                                     String busstopname = serviceBusStopList.get(position).getName();
                                     Log.d("asf",busstopname);//pass through the serviceBusStopList
 
-                                    //Bundle bundle = new Bundle();
-                                    //bundle.putParcelable("busJourney", Parcels.wrap(new SelectedBusJourney(serviceBusStopList,position)));
+                                    Control.busRoute = serviceBusStopList;
+                                    Control.selectedBusIndex = position;
 
                                     Intent intent = new Intent(MainActivity.this, BusJourney.class);
 
@@ -163,8 +159,8 @@ public class MainActivity extends AppCompatActivity {
                                     String busstopname = serviceBusStopList.get(position).getName();
                                     Log.d("asf",busstopname);//pass through the serviceBusStopList
 
-                                    //Bundle bundle = new Bundle();
-                                    //bundle.putParcelable("busJourney", Parcels.wrap(new SelectedBusJourney(serviceBusStopList,position)));
+                                    Control.busRoute = serviceBusStopList;
+                                    Control.selectedBusIndex = position;
 
                                     Intent intent = new Intent(MainActivity.this, BusJourney.class);
 

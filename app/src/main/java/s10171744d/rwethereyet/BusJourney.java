@@ -3,14 +3,20 @@ package s10171744d.rwethereyet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-
+import android.widget.TextView;
 
 
 import java.util.List;
 
 import s10171744d.rwethereyet.model.BusStop;
+import s10171744d.rwethereyet.model.Control;
 
 public class BusJourney extends AppCompatActivity {
+
+    TextView tv1;
+    TextView tv2;
+
+    Integer LastStopIndex;
 
     List<BusStop> busRoute;
     @Override
@@ -18,14 +24,18 @@ public class BusJourney extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_journey);
 
-        //SelectedBusJourney bj = Parcels.unwrap(getIntent().getParcelableExtra("busJourney"));
+        tv1 = (TextView)findViewById(R.id.textView);
+        tv2 = (TextView)findViewById(R.id.textView2);
 
-        //List<BusStop> busRoute = bj.getRoute(); //grab the bus stop route from the mainactivity
 
-        //Integer selectedBusStopIndex = bj.getStopIndex(); //grab the selected bus index from mainactivity
+        List<BusStop> busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
 
-        //Log.d("asf",busRoute.get(0).getName()); //test if the busroute was succesfuly transferred
-        //Log.d("asf",selectedBusStopIndex+"asdas"); //test if the busroute index was succesfuly transferred
+        Integer selectedBusStopIndex = Control.selectedBusIndex; //grab the selected bus index from mainactivity
+
+
+        tv1.setText(busRoute.get(0).getLat()+"");
+        tv2.setText(selectedBusStopIndex+"asdas");
+
 
     }
 }
