@@ -1,7 +1,6 @@
 package s10171744d.rwethereyet;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,20 +10,16 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.TextView;
 
 
 import com.google.android.gms.location.DetectedActivity;
-import com.google.android.gms.location.Geofence;
 
 import java.util.List;
 
 import io.nlopez.smartlocation.OnActivityUpdatedListener;
-import io.nlopez.smartlocation.OnGeofencingTransitionListener;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
-import io.nlopez.smartlocation.geofencing.model.GeofenceModel;
 import io.nlopez.smartlocation.location.config.LocationParams;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
 import s10171744d.rwethereyet.model.BusStop;
@@ -40,7 +35,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     private static final int LOCATION_PERMISSION_ID = 1001;
 
     Integer LastStopIndex;
-    Integer FirstStopIndex;
+    Integer PrevStopIndex;
 
     List<BusStop> busRoute;
 
@@ -55,9 +50,14 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         tv2 = (TextView)findViewById(R.id.textView2);
 
         LastStopIndex = Control.selectedBusIndex;
-        FirstStopIndex = null;
+        PrevStopIndex = null;
 
         List<BusStop> busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
+
+
+        //trim the busroute to end with destination
+        busRoute.subList(0, LastStopIndex);
+
 
 
         // check location permission
@@ -99,10 +99,18 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     @Override
     public void onLocationUpdated(Location location) { //whenever update location
         showLocation(location);
-        withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,25);
+        //withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,25);
+        if (PrevStopIndex == null)
+        {
+            findFirstStop(location);
+        }
+        else//lol this is p unoptimised
+        {
+
+        }
     }
 
-    private Boolean findFirstStop(Location currentlocation)
+    private void findFirstStop(Location currentlocation)//Boolean findFirstStop(Location currentlocation)
     {
         double stoplat;
         double stoplon;
@@ -110,7 +118,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         double curLon = currentlocation.getLongitude();
 
         int stopIndex=0;
-        int count = 0;
+        boolean succ = false; //track whether bus stop found
 
         for (BusStop bs : busRoute)
         {
@@ -118,9 +126,28 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
             stoplon = bs.getLon();
             if (withinRadius(stoplat,stoplon,curLat,curLon,10))
             {
-                return stopIndex;
+                //succ = true;
+                PrevStopIndex = stopIndex; //no need for succ, since if this is set to sth that means the value no longer null<<<
             }
             stopIndex++;
+        }
+        //return succ; //if successful, will stop searching for first stop
+    }
+
+    private boolean isAtStop(List<BusStop> busRoute, Integer nextStop, Location currentlocation) //if user is at bus stop location
+    {
+        double stoplat = busRoute.get(nextStop).getLat();
+        double stoplon = busRoute.get(nextStop).getLon();
+        double curLat = currentlocation.getLatitude();
+        double curLon = currentlocation.getLongitude();
+
+        if (withinRadius(stoplat,stoplon,curLat,curLon,10))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
