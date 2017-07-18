@@ -90,7 +90,6 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     private void stopLocation() {
         SmartLocation.with(this).location().stop();
         SmartLocation.with(this).activity().stop();
-        tv1.setText("Location stopped!");
 
     }
 
@@ -102,7 +101,38 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     @Override
     public void onLocationUpdated(Location location) { //whenever update location
         showLocation(location);
+        if (withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,25))
+        {
+            tv2.setText("25m diff");
+        }
+        else if (withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,50))
+        {
+            tv2.setText("50m diff");
+        }
+        else if (withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,100))
+        {
+            tv2 .setText("100m diff");
+        }
+        else if (withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,500))
+        {
+            tv2 .setText("500m diff");
+        }
 
+    }
+
+    private boolean withinRadius(double startLatitude, double startLongitude, double endLatitude, double endLongitude, double radius) //check if 2 coords are within a x radius of each other
+    {
+        float[] dist  = new float[1];
+        Location.distanceBetween(startLatitude,startLongitude,endLatitude,endLongitude,dist);
+
+        if (dist[0]<=radius)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private void showLocation(Location location) {
