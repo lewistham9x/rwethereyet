@@ -42,14 +42,15 @@
         android:orientation="horizontal">
 
         <ListView
+            android:id="@+id/busRouteListView1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="100"
-            android:id="@+id/busRouteListView1"></ListView>
+            android:layout_weight="50"></ListView>
+
         <ListView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0"
+            android:layout_weight="50"
             android:id="@+id/busRouteListView2"></ListView>
     </LinearLayout>
 

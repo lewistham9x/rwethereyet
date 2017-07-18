@@ -63,20 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 if (routecount == 1)
                 {
 
-                    LinearLayout.LayoutParams param1 = (LinearLayout.LayoutParams)
-                            busRouteListView1.getLayoutParams();
-                    param1.weight = 100;
-                    param1.width = 100;
-                    busRouteListView1.setLayoutParams(param1);
-
-                    LinearLayout.LayoutParams param2 = (LinearLayout.LayoutParams)
-                            busRouteListView2.getLayoutParams();
-                    param2.weight = 0;
-                    busRouteListView2.setLayoutParams(param2);
-
-
-                    busRouteListView2.setVisibility(View.GONE);
-
                     getBusStopList(busServiceNo.getText()+"", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
                         @Override
                         public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
@@ -98,29 +84,13 @@ public class MainActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                             });
-                        }
-                    });
 
+                        }
+
+                    });
                 }
                 else
                 {
-
-                    //set weight to 50 for both listviews
-                    LinearLayout.LayoutParams param1 = (LinearLayout.LayoutParams)
-                            busRouteListView1.getLayoutParams();
-                    param1.weight = 50;
-                    param1.width = 100;
-
-                    busRouteListView1.setLayoutParams(param1);
-//
-                    LinearLayout.LayoutParams param2 = (LinearLayout.LayoutParams)
-                            busRouteListView2.getLayoutParams();
-                    param2.weight = 50;
-                    busRouteListView2.setLayoutParams(param2);
-
-                    busRouteListView2.setVisibility(View.VISIBLE);
-
-
 
                     getBusStopList(busServiceNo.getText()+"", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
                         @Override
@@ -128,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                         {
                             BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(serviceBusStopList);
                             busRouteListView1.setAdapter(adapter);
+
                             busRouteListView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
@@ -167,8 +138,10 @@ public class MainActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                             });
+
                         }
                     });
+
                 }
 
             }
