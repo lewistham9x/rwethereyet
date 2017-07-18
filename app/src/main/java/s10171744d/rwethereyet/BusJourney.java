@@ -40,6 +40,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     private static final int LOCATION_PERMISSION_ID = 1001;
 
     Integer LastStopIndex;
+    Integer FirstStopIndex;
 
     List<BusStop> busRoute;
 
@@ -53,13 +54,10 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         tv1 = (TextView)findViewById(R.id.textView);
         tv2 = (TextView)findViewById(R.id.textView2);
 
+        LastStopIndex = Control.selectedBusIndex;
+        FirstStopIndex = null;
 
         List<BusStop> busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
-
-        Integer selectedBusStopIndex = Control.selectedBusIndex; //grab the selected bus index from mainactivity
-
-        //tv1.setText(busRoute.get(0).getLat()+"");
-        //tv2.setText(selectedBusStopIndex+"asdas");
 
 
         // check location permission
@@ -101,30 +99,37 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     @Override
     public void onLocationUpdated(Location location) { //whenever update location
         showLocation(location);
-        if (withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,25))
-        {
-            tv2.setText("25m diff");
-        }
-        else if (withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,50))
-        {
-            tv2.setText("50m diff");
-        }
-        else if (withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,100))
-        {
-            tv2 .setText("100m diff");
-        }
-        else if (withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,500))
-        {
-            tv2 .setText("500m diff");
-        }
-
+        withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,25);
     }
 
-    private boolean withinRadius(double startLatitude, double startLongitude, double endLatitude, double endLongitude, double radius) //check if 2 coords are within a x radius of each other
+    private Boolean findFirstStop(Location currentlocation)
+    {
+        double stoplat;
+        double stoplon;
+        double curLat = currentlocation.getLatitude();
+        double curLon = currentlocation.getLongitude();
+
+        int stopIndex=0;
+        int count = 0;
+
+        for (BusStop bs : busRoute)
+        {
+            stoplat = bs.getLat();
+            stoplon = bs.getLon();
+            if (withinRadius(stoplat,stoplon,curLat,curLon,10))
+            {
+                return stopIndex;
+            }
+            stopIndex++;
+        }
+    }
+
+    private boolean withinRadius(double startLatitude, double startLongitude, double endLatitude, double endLongitude, double radius) //check if 2 coords are within a x of each other
     {
         float[] dist  = new float[1];
         Location.distanceBetween(startLatitude,startLongitude,endLatitude,endLongitude,dist);
 
+        Log.d("dist",dist[0]+"");
         if (dist[0]<=radius)
         {
             return true;
