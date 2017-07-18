@@ -71,20 +71,6 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("detected", "there is 1 route");//pass through the serviceBusStopList
 
 
-                                LinearLayout.LayoutParams param1 = (LinearLayout.LayoutParams)
-                                        busRouteListView1.getLayoutParams();
-                                param1.weight = 100;
-                                param1.width = 100;
-                                busRouteListView1.setLayoutParams(param1);
-
-                                LinearLayout.LayoutParams param2 = (LinearLayout.LayoutParams)
-                                        busRouteListView2.getLayoutParams();
-                                param2.weight = 0;
-                                busRouteListView2.setLayoutParams(param2);
-
-
-                                busRouteListView2.setVisibility(View.GONE);
-
                                 getBusStopList(busServiceNo.getText() + "", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
                                     @Override
                                     public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
@@ -107,19 +93,23 @@ public class MainActivity extends AppCompatActivity {
                                         });
                                     }
                                 });
+                                LinearLayout.LayoutParams param1 = (LinearLayout.LayoutParams)
+                                        busRouteListView1.getLayoutParams();
+                                param1.weight = 100;
+                                busRouteListView1.setLayoutParams(param1);
+
+                                LinearLayout.LayoutParams param2 = (LinearLayout.LayoutParams)
+                                        busRouteListView2.getLayoutParams();
+                                param2.weight = 0;
+                                busRouteListView2.setLayoutParams(param2);
+
+
+                                busRouteListView2.setVisibility(View.GONE);
+
+
                             }
                             else
                             {
-                                Log.d("detected", "there are 2 routes");//pass through the serviceBusStopList
-
-                                //set weight to 50 for both listviews
-                                LinearLayout.LayoutParams param1 = (LinearLayout.LayoutParams)
-                                        busRouteListView1.getLayoutParams();
-                                param1.weight = 50;
-                                param1.width = 100;
-
-                                busRouteListView1.setLayoutParams(param1);
-
                                 getBusStopList(busServiceNo.getText() + "", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
                                     @Override
                                     public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
@@ -145,13 +135,6 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
 
-                                LinearLayout.LayoutParams param2 = (LinearLayout.LayoutParams)
-                                        busRouteListView2.getLayoutParams();
-                                param2.weight = 50;
-                                busRouteListView2.setLayoutParams(param2);
-
-                                busRouteListView2.setVisibility(View.VISIBLE);
-
                                 getBusStopList(busServiceNo.getText() + "", 2, new SingleArgumentCallback<List<BusStop>>() {//call the callback
                                     @Override
                                     public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
@@ -176,17 +159,66 @@ public class MainActivity extends AppCompatActivity {
 
                                     }
                                 });
+                                Log.d("detected", "there are 2 routes");//pass through the serviceBusStopList
+
+                                //set weight to 50 for both listviews
+                                LinearLayout.LayoutParams param1 = (LinearLayout.LayoutParams)
+                                        busRouteListView1.getLayoutParams();
+                                param1.weight = 50;
+
+                                busRouteListView1.setLayoutParams(param1);
+
+
+                                LinearLayout.LayoutParams param2 = (LinearLayout.LayoutParams)
+                                        busRouteListView2.getLayoutParams();
+                                param2.weight = 50;
+                                busRouteListView2.setLayoutParams(param2);
+
+                                busRouteListView2.setVisibility(View.VISIBLE);
+
 
                             }
                         }
                         else
                         {
-                            //move over all the old bus stop errors to here instead?
+                            Log.d("detected", "there is no route");//pass through the serviceBusStopList
+
+
+                            LinearLayout.LayoutParams param1 = (LinearLayout.LayoutParams)
+                                    busRouteListView1.getLayoutParams();
+                            param1.weight = 100;
+                            busRouteListView1.setLayoutParams(param1);
+
+                            LinearLayout.LayoutParams param2 = (LinearLayout.LayoutParams)
+                                    busRouteListView2.getLayoutParams();
+                            param2.weight = 0;
+                            busRouteListView2.setLayoutParams(param2);
+                            busRouteListView2.setVisibility(View.GONE);
+
+
+                            //create error bus stop object for non existent bus service (for error handling)
+                            BusStop error = new BusStop();
+                            error.error(1);
+                            List<BusStop> errorBusStopList = new ArrayList<BusStop>(){};
+                            errorBusStopList.add(error);
+
+                            BusRouteListViewAdapter erroradapter = new BusRouteListViewAdapter(errorBusStopList);
+                            busRouteListView1.setAdapter(erroradapter);
+
+
                         }
                     }
                     @Override
                     public void onFailure(Call<BusRouterServiceResponse> call, Throwable t) {
                         //handle errors here instead?
+                        //create error bus stop object for non existent bus service (for error handling)
+                        BusStop error = new BusStop();
+                        error.error(2);
+                        List<BusStop> errorBusStopList = new ArrayList<BusStop>(){};
+                        errorBusStopList.add(error);
+
+                        BusRouteListViewAdapter erroradapter = new BusRouteListViewAdapter(errorBusStopList);
+                        busRouteListView1.setAdapter(erroradapter);
                     }
                 });
             }
@@ -226,23 +258,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
-                else
-                {
-                    //create error bus stop object for non existent bus service
-                    BusStop error = new BusStop();
-                    error.error(1);
-                    busStopsForService.add(error);
-                }
                 callback.onComplete(busStopsForService); //when retrieved network info "return" the busStopsForService
             }
 
             @Override
             public void onFailure(Call<BusRouterServiceResponse> call, Throwable t) {
-                //create error bus stop object for no connection
-                BusStop error = new BusStop();
-                error.error(2);
-                busStopsForService.add(error);
-                callback.onComplete(busStopsForService); //when retrieved network info "return" the busStopsForService
+                //error handling moved to routecount
             }
         });
     }
