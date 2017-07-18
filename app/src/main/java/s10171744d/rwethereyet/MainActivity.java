@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
     ListView busRouteListView2;
     EditText busServiceNo;
 
-    Integer routecount;
-
     //List<BusStop> selectedServiceBusStopList;
 
     @Override
@@ -41,15 +39,15 @@ public class MainActivity extends AppCompatActivity {
 
         final Button queryButton = (Button) findViewById(R.id.queryButton);
         final EditText busServiceNo = (EditText) findViewById(R.id.txtServiceNo);
-        busRouteListView1 = (ListView)findViewById(R.id.busRouteListView1);
-        busRouteListView2 = (ListView)findViewById(R.id.busRouteListView2);
-        routecount = 0;
+        busRouteListView1 = (ListView) findViewById(R.id.busRouteListView1);
+        busRouteListView2 = (ListView) findViewById(R.id.busRouteListView2);
 
         Network.getBusRouterService().listAllStops().enqueue(new Callback<List<BusStop>>() {
             @Override
             public void onResponse(Call<List<BusStop>> call, Response<List<BusStop>> response) {
                 BusStopList = response.body();//add all the bus stops in singapore as objects to the list
             }
+
             @Override
             public void onFailure(Call<List<BusStop>> call, Throwable t) {
             }
@@ -60,90 +58,137 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (routecount == 1)
-                {
-
-                    getBusStopList(busServiceNo.getText()+"", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
-                        @Override
-                        public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
+                Network.getBusRouterService().listRepos(busServiceNo.getText()+"").enqueue(new Callback<BusRouterServiceResponse>() {
+                    @Override
+                    public void onResponse(Call<BusRouterServiceResponse> call, Response<BusRouterServiceResponse> response) {
+                        if (response.isSuccessful()) //if response is successful (such a bus stop exists)
                         {
-                            BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(serviceBusStopList);
-                            busRouteListView1.setAdapter(adapter);
-                            busRouteListView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                                @Override
-                                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-                                {
-                                    String busstopname = serviceBusStopList.get(position).getName();
-                                    Log.d("asf",busstopname);//pass through the serviceBusStopList
+                            BusRouterServiceResponse yay = response.body(); //need to cos privatised
+                            Integer routecount = yay.getRouteCount();//get the route count
+                            Log.d("routecount", routecount+"");//pass through the serviceBusStopList
 
-                                    Control.busRoute = serviceBusStopList;
-                                    Control.selectedBusIndex = position;
+                            if (routecount == 1) {
+                                Log.d("detected", "there is 1 route");//pass through the serviceBusStopList
 
-                                    Intent intent = new Intent(MainActivity.this, BusJourney.class);
 
-                                    startActivity(intent);
-                                }
-                            });
+                                LinearLayout.LayoutParams param1 = (LinearLayout.LayoutParams)
+                                        busRouteListView1.getLayoutParams();
+                                param1.weight = 100;
+                                param1.width = 100;
+                                busRouteListView1.setLayoutParams(param1);
 
+                                LinearLayout.LayoutParams param2 = (LinearLayout.LayoutParams)
+                                        busRouteListView2.getLayoutParams();
+                                param2.weight = 0;
+                                busRouteListView2.setLayoutParams(param2);
+
+
+                                busRouteListView2.setVisibility(View.GONE);
+
+                                getBusStopList(busServiceNo.getText() + "", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
+                                    @Override
+                                    public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
+                                    {
+                                        BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(serviceBusStopList);
+                                        busRouteListView1.setAdapter(adapter);
+                                        busRouteListView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                                                String busstopname = serviceBusStopList.get(position).getName();
+                                                Log.d("asf", busstopname);//pass through the serviceBusStopList
+
+                                                Control.busRoute = serviceBusStopList;
+                                                Control.selectedBusIndex = position;
+
+                                                Intent intent = new Intent(MainActivity.this, BusJourney.class);
+
+                                                startActivity(intent);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                Log.d("detected", "there are 2 routes");//pass through the serviceBusStopList
+
+                                //set weight to 50 for both listviews
+                                LinearLayout.LayoutParams param1 = (LinearLayout.LayoutParams)
+                                        busRouteListView1.getLayoutParams();
+                                param1.weight = 50;
+                                param1.width = 100;
+
+                                busRouteListView1.setLayoutParams(param1);
+
+                                getBusStopList(busServiceNo.getText() + "", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
+                                    @Override
+                                    public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
+                                    {
+                                        Log.d("completed", "firstroute");//pass through the serviceBusStopList
+                                        BusRouteListViewAdapter adapter1 = new BusRouteListViewAdapter(serviceBusStopList);
+                                        busRouteListView1.setAdapter(adapter1);
+
+                                        busRouteListView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                                                String busstopname = serviceBusStopList.get(position).getName();
+                                                Log.d("asf", busstopname);//pass through the serviceBusStopList
+
+                                                Control.busRoute = serviceBusStopList;
+                                                Control.selectedBusIndex = position;
+
+                                                Intent intent = new Intent(MainActivity.this, BusJourney.class);
+
+                                                startActivity(intent);
+                                            }
+                                        });
+                                    }
+                                });
+
+                                LinearLayout.LayoutParams param2 = (LinearLayout.LayoutParams)
+                                        busRouteListView2.getLayoutParams();
+                                param2.weight = 50;
+                                busRouteListView2.setLayoutParams(param2);
+
+                                busRouteListView2.setVisibility(View.VISIBLE);
+
+                                getBusStopList(busServiceNo.getText() + "", 2, new SingleArgumentCallback<List<BusStop>>() {//call the callback
+                                    @Override
+                                    public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
+                                    {
+                                        Log.d("completed", "secondroute");//pass through the serviceBusStopList
+                                        BusRouteListViewAdapter adapter2 = new BusRouteListViewAdapter(serviceBusStopList);
+                                        busRouteListView2.setAdapter(adapter2);
+                                        busRouteListView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                                                String busstopname = serviceBusStopList.get(position).getName();
+                                                Log.d("asf", busstopname);//pass through the serviceBusStopList
+
+                                                Control.busRoute = serviceBusStopList;
+                                                Control.selectedBusIndex = position;
+
+                                                Intent intent = new Intent(MainActivity.this, BusJourney.class);
+
+                                                startActivity(intent);
+                                            }
+                                        });
+
+                                    }
+                                });
+
+                            }
                         }
-
-                    });
-                }
-                else
-                {
-
-                    getBusStopList(busServiceNo.getText()+"", 1, new SingleArgumentCallback<List<BusStop>>() {//call the callback
-                        @Override
-                        public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
+                        else
                         {
-                            BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(serviceBusStopList);
-                            busRouteListView1.setAdapter(adapter);
-
-                            busRouteListView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                                @Override
-                                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-                                {
-                                    String busstopname = serviceBusStopList.get(position).getName();
-                                    Log.d("asf",busstopname);//pass through the serviceBusStopList
-
-                                    Control.busRoute = serviceBusStopList;
-                                    Control.selectedBusIndex = position;
-
-                                    Intent intent = new Intent(MainActivity.this, BusJourney.class);
-
-                                    startActivity(intent);
-                                }
-                            });
+                            //move over all the old bus stop errors to here instead?
                         }
-                    });
-
-                    getBusStopList(busServiceNo.getText()+"", 2, new SingleArgumentCallback<List<BusStop>>() {//call the callback
-                        @Override
-                        public void onComplete(final List<BusStop> serviceBusStopList) //will execute after callback is complete with data etc
-                        {
-                            BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(serviceBusStopList);
-                            busRouteListView2.setAdapter(adapter);
-                            busRouteListView2.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                                @Override
-                                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-                                {
-                                    String busstopname = serviceBusStopList.get(position).getName();
-                                    Log.d("asf",busstopname);//pass through the serviceBusStopList
-
-                                    Control.busRoute = serviceBusStopList;
-                                    Control.selectedBusIndex = position;
-
-                                    Intent intent = new Intent(MainActivity.this, BusJourney.class);
-
-                                    startActivity(intent);
-                                }
-                            });
-
-                        }
-                    });
-
-                }
-
+                    }
+                    @Override
+                    public void onFailure(Call<BusRouterServiceResponse> call, Throwable t) {
+                        //handle errors here instead?
+                    }
+                });
             }
         });
     }
@@ -159,20 +204,6 @@ public class MainActivity extends AppCompatActivity {
                 {
                     BusRouterServiceResponse yay = response.body();
                     String[] result = new String[0];
-
-                    //test count routes
-                    routecount = 0;
-                    if (yay.getRouteOne().getStops().length>0) //if there are bus stops in array
-                    {
-                        routecount++;
-                    }
-                    if (yay.getRouteTwo().getStops().length>0) //if there are bus stops in array
-                    {
-                        routecount++;
-                    }
-                    Log.d("routecount",routecount+"");
-
-
 
                     if (routeNo == 1)
                     {
