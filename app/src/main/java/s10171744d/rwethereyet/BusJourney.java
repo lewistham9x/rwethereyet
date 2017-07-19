@@ -34,8 +34,11 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
 
     private static final int LOCATION_PERMISSION_ID = 1001;
 
-    Integer LastStopIndex;
+    Integer LastStopIndex; //destination
+    Integer FirstStopIndex;
     Integer PrevStopIndex;
+
+    Integer StopsTilAlert;
 
     List<BusStop> busRoute;
 
@@ -50,7 +53,9 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         tv2 = (TextView)findViewById(R.id.textView2);
 
         LastStopIndex = Control.selectedBusIndex;
-        PrevStopIndex = null;
+        FirstStopIndex = null;
+
+        StopsTilAlert = 1; // default value for number of stops before alerting user to get off
 
         List<BusStop> busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
 
@@ -100,17 +105,39 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     public void onLocationUpdated(Location location) { //whenever update location
         showLocation(location);
         //withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,25);
-        if (PrevStopIndex == null)
+        if (FirstStopIndex == null)
         {
-            findFirstStop(location);
+            if (findFirstStop(location)) //if first stop is finally found, will trim
+            {
+                busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
+                PrevStopIndex = 0;
+            }
+
         }
-        else//lol this is p unoptimised
+        else//lol this is p unoptimised - will keep check+updating everytime location is updated
         {
+            int stopStatus = checkPreviousStop(busRoute,PrevStopIndex,location);
+
+            if (stopStatus==1) //check if user has reached next stop
+            {
+                showPreviousStop(busRoute,PrevStopIndex);//display the last stop if the previous stop has been updated
+                if (isReaching(busRoute,StopsTilAlert))
+                {
+                    //alert user that that they are within the alert distance from destination
+                }
+            }
+            else if (stopStatus==2)//check is user has reached destination
+            {
+                //send notification to alert user that they reached
+            }
+
+
+
 
         }
     }
 
-    private void findFirstStop(Location currentlocation)//Boolean findFirstStop(Location currentlocation)
+    private boolean findFirstStop(Location currentlocation)//Boolean findFirstStop(Location currentlocation)
     {
         double stoplat;
         double stoplon;
@@ -126,18 +153,18 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
             stoplon = bs.getLon();
             if (withinRadius(stoplat,stoplon,curLat,curLon,10))
             {
-                //succ = true;
-                PrevStopIndex = stopIndex; //no need for succ, since if this is set to sth that means the value no longer null<<<
+                succ = true;
+                FirstStopIndex = stopIndex;
             }
             stopIndex++;
         }
-        //return succ; //if successful, will stop searching for first stop
+        return succ; //if successful, will stop searching for first stop
     }
 
-    private boolean isAtStop(List<BusStop> busRoute, Integer nextStop, Location currentlocation) //if user is at bus stop location
+    private boolean isAtStop(List<BusStop> busRoute, Integer stop, Location currentlocation) //if user is at bus stop location
     {
-        double stoplat = busRoute.get(nextStop).getLat();
-        double stoplon = busRoute.get(nextStop).getLon();
+        double stoplat = busRoute.get(stop).getLat();
+        double stoplon = busRoute.get(stop).getLon();
         double curLat = currentlocation.getLatitude();
         double curLon = currentlocation.getLongitude();
 
@@ -178,8 +205,61 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
             tv1.setText("Null location");
         }
     }
+    private int checkPreviousStop(List<BusStop> busRoute, Integer prevStopIndex, Location location) //returns a int value if previous stop is updated/reached destination
+    //0 = no change in bus stop, 1 = change in bus stop, 2= destination has been reached
+    {
+        if (isAtStop(busRoute,prevStopIndex+1,location)) //if user gps is near the next bus stop
+        {
+            if (prevStopIndex == busRoute.size()) //if the last stop was destination stop
+            {
+                return 2;
+            }
+            else
+            {
+                PrevStopIndex++;
+                return 1;
+            }
+        }
+        return 0;
+    }
 
-    @Override
+    private void showPreviousStop(List<BusStop> busRoute, Integer prevStopIndex)
+    {
+        BusStop prevStop = busRoute.get(prevStopIndex);
+        String code = prevStop.getCode();
+        String name = prevStop.getName();
+        double lat = prevStop.getLat();
+        double lon = prevStop.getLon();
+
+        String output = String.format("Last Bus Stop: Bus Stop %o\n\nCode: %s\nName: %s\n",prevStopIndex,code,name);
+
+        tv2.setText(output);
+    }
+
+    private Boolean isReaching(List<BusStop> busRoute, Integer stopsAway) //check if the user is reaching the destination (based on no. of stops away)
+    {
+        //count how many stops to destination (to prevent null reference and for alerting when 1 stop away)
+        int stopsleft;
+        if (PrevStopIndex < busRoute.size()) // if the previous stop index is less than the last stop index (handle null reference)
+        {
+            stopsleft = busRoute.size() - PrevStopIndex;
+            if (stopsleft<=stopsAway)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else //error cos the previous stop has past by the final stop
+        {
+            //handle errors?
+            return false;
+        }
+    }
+
+        @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("End Journey");
