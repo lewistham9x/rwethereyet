@@ -109,18 +109,21 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     @Override
     public void onLocationUpdated(Location location) { //whenever update location[
 
+        /*
         //test set location to dover stn - same coords as json
         location.setLatitude(1.31167951129602);
         location.setLongitude(103.77868390552867);
 
         //test set location to end of stn
-        ///ocation.setLatitude(1.3142989);
-        ///ocation.setLongitude(103.7784209);
+        location.setLatitude(1.3142989);
+        location.setLongitude(103.7784209);
 
+        */
 
-
+        //how far am i from the coords of Dover Stn stored in the database?
         float[] dist  = new float[1];
-        Location.distanceBetween(1.3142989,103.7784209,location.getLatitude(),location.getLongitude(),dist);
+
+        Location.distanceBetween(1.31167951129602,103.77868390552867,location.getLatitude(),location.getLongitude(),dist);
 
         debug2.setText(dist[0]+"");
 
@@ -131,7 +134,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         {
             if (findFirstStop(location,busRoute)) //if first stop is finally found, will trim
             {
-                debug2.setText(FirstStopIndex.toString() );
+                //debug2.setText(FirstStopIndex.toString() );
 
                 busRoute = busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
                 PrevStopIndex = 0;
@@ -207,7 +210,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         double curLat = currentlocation.getLatitude();
         double curLon = currentlocation.getLongitude();
 
-        if (withinRadius(stoplat,stoplon,curLat,curLon,1)) //10 is too small radius for checking nearby bus stop
+        if (withinRadius(stoplat,stoplon,curLat,curLon,50)) //10 is too small radius for checking nearby bus stop
         {
             return true;
         }
