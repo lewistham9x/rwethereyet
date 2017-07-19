@@ -148,7 +148,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         }
         else//lol this is p unoptimised - will keep check+updating everytime location is updated -- is it???
         {
-            int stopStatus = updatePreviousStop(busRoute,PrevStopIndex,location);
+            int stopStatus = updatePreviousStop(busRoute,PrevStopIndex,location);// update the previous bus stop
 
             if (stopStatus==1) //check if user has reached next stop
             {
