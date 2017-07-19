@@ -109,10 +109,20 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     @Override
     public void onLocationUpdated(Location location) { //whenever update location[
 
-        //test set location to dover stn
+        //test set location to dover stn - same coords as json
         location.setLatitude(1.31167951129602);
         location.setLongitude(103.77868390552867);
 
+        //test set location to end of stn
+        ///ocation.setLatitude(1.3142989);
+        ///ocation.setLongitude(103.7784209);
+
+
+
+        float[] dist  = new float[1];
+        Location.distanceBetween(1.3142989,103.7784209,location.getLatitude(),location.getLongitude(),dist);
+
+        debug2.setText(dist[0]+"");
 
 
         showLocation(location);
@@ -197,7 +207,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         double curLat = currentlocation.getLatitude();
         double curLon = currentlocation.getLongitude();
 
-        if (withinRadius(stoplat,stoplon,curLat,curLon,10))
+        if (withinRadius(stoplat,stoplon,curLat,curLon,1)) //10 is too small radius for checking nearby bus stop
         {
             return true;
         }
