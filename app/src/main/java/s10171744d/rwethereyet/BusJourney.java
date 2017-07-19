@@ -57,7 +57,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
 
         StopsTilAlert = 1; // default value for number of stops before alerting user to get off
 
-        List<BusStop> busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
+        busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
 
 
         //trim the busroute to end with destination
@@ -102,14 +102,21 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     }
 
     @Override
-    public void onLocationUpdated(Location location) { //whenever update location
-        //withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,25);
+    public void onLocationUpdated(Location location) { //whenever update location[
+        //withinRadius(,,1.37016500002901,103.8953599999,25);
+
+
         if (FirstStopIndex == null)
         {
-            if (findFirstStop(location)) //if first stop is finally found, will trim
+            if (findFirstStop(location,busRoute)) //if first stop is finally found, will trim
             {
                 busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
                 PrevStopIndex = 0;
+                tv2.setText("Found starting bus stop: "+busRoute.get(0).getName());
+            }
+            else
+            {
+                tv2.setText("Searching for bus stop...");
             }
 
         }
@@ -125,7 +132,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
                 if (isReaching(busRoute,StopsTilAlert)) //if bus stops left are within set value
                 {
                     Log.d("TESTING","You are reaching the destination in 1 stop");
-                    tv1.setText("You are reaching the destination in " + StopsTilAlert +"stops.");
+                    tv1.setText("You are reaching the destination in " + StopsTilAlert +"stops");
                     //alert user that that they are within the alert distance from destination
                 }
                 else
@@ -142,14 +149,10 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
                 tv1.setText("You have reached your destination");
 
             }
-
-
-
-
         }
     }
 
-    private boolean findFirstStop(Location currentlocation)//Boolean findFirstStop(Location currentlocation)
+    private boolean findFirstStop(Location currentlocation,List<BusStop> busRoute)//Boolean findFirstStop(Location currentlocation)
     {
         double stoplat;
         double stoplon;
@@ -313,12 +316,12 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         builder.show();
     }
 
-    @Override
-    protected void onStop() {
-        stopLocation();
-        super.onStop();
-        Log.d("detected", "onStopevent");
-    }
+    //@Override
+    //protected void onStop() {
+    //    stopLocation();
+    //    super.onStop();
+    //    Log.d("detected", "onStopevent");
+    //}
 
     @Override
     protected void onDestroy() {
