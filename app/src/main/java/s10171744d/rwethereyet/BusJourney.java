@@ -103,7 +103,6 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
 
     @Override
     public void onLocationUpdated(Location location) { //whenever update location
-        showLocation(location);
         //withinRadius(1.37060695394614,103.89266808874676,1.37016500002901,103.8953599999,25);
         if (FirstStopIndex == null)
         {
@@ -114,21 +113,34 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
             }
 
         }
-        else//lol this is p unoptimised - will keep check+updating everytime location is updated
+        else//lol this is p unoptimised - will keep check+updating everytime location is updated -- is it???
         {
-            int stopStatus = checkPreviousStop(busRoute,PrevStopIndex,location);
+            int stopStatus = updatePreviousStop(busRoute,PrevStopIndex,location);
 
             if (stopStatus==1) //check if user has reached next stop
             {
-                showPreviousStop(busRoute,PrevStopIndex);//display the last stop if the previous stop has been updated
-                if (isReaching(busRoute,StopsTilAlert))
+                //display the last stop if the previous stop has been updated
+                showPreviousStop(busRoute,PrevStopIndex);
+
+                if (isReaching(busRoute,StopsTilAlert)) //if bus stops left are within set value
                 {
+                    Log.d("TESTING","You are reaching the destination in 1 stop");
+                    tv1.setText("You are reaching the destination in " + StopsTilAlert +"stops.");
                     //alert user that that they are within the alert distance from destination
                 }
+                else
+                {
+                    //display the number of stops left to destination
+                    tv1.setText("Stops Left: " + countStopsAway(busRoute));
+                }
+
+
             }
             else if (stopStatus==2)//check is user has reached destination
             {
                 //send notification to alert user that they reached
+                tv1.setText("You have reached your destination");
+
             }
 
 
@@ -194,34 +206,56 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         }
     }
 
-    private void showLocation(Location location) {
-        if (location != null) {
-            final String text = String.format("Latitude %.6f, Longitude %.6f",
-                    location.getLatitude(),
-                    location.getLongitude());
-            tv1.setText(text);
-
-        } else {
-            tv1.setText("Null location");
-        }
-    }
-    private int checkPreviousStop(List<BusStop> busRoute, Integer prevStopIndex, Location location) //returns a int value if previous stop is updated/reached destination
+    //private void showLocation(Location location) {
+    //    if (location != null) {
+    //        final String text = String.format("Latitude %.6f, Longitude %.6f",
+    //                location.getLatitude(),
+    //                location.getLongitude());
+    //        tv1.setText(text);
+//
+    //    } else {
+    //        tv1.setText("Null location");
+    //    }
+    //}
+    private int updatePreviousStop(List<BusStop> busRoute, Integer prevStopIndex, Location location) //returns a int value if previous stop is updated/reached destination
     //0 = no change in bus stop, 1 = change in bus stop, 2= destination has been reached
     {
         if (isAtStop(busRoute,prevStopIndex+1,location)) //if user gps is near the next bus stop
         {
-            if (prevStopIndex == busRoute.size()) //if the last stop was destination stop
+            Integer stopsAway = countStopsAway(busRoute);
+            if (stopsAway==0)//if the previous stop was destination stop
             {
                 return 2;
             }
-            else
+            else if (stopsAway>0) //if its not at destination, increase prevstopindex
             {
                 PrevStopIndex++;
                 return 1;
             }
+            else //if theres error in which previous stop index is past the destination
+            {
+                Log.d("ERROR","Last stop index is past destination??");
+                return -1;
+            }
         }
         return 0;
     }
+
+    private Integer countStopsAway(List<BusStop> busRoute)
+    {
+        int stopsleft;
+        if (PrevStopIndex <= busRoute.size()) // if the previous stop index is less than the last stop index (handle null reference)
+        {
+            stopsleft = busRoute.size() - PrevStopIndex;
+        }
+        else        //error cos the previous stop has past by the final stop
+        {
+            //handle errors?
+            stopsleft = -1;
+        }
+        return stopsleft;
+    }
+
 
     private void showPreviousStop(List<BusStop> busRoute, Integer prevStopIndex)
     {
@@ -236,13 +270,13 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         tv2.setText(output);
     }
 
+
     private Boolean isReaching(List<BusStop> busRoute, Integer stopsAway) //check if the user is reaching the destination (based on no. of stops away)
     {
         //count how many stops to destination (to prevent null reference and for alerting when 1 stop away)
-        int stopsleft;
-        if (PrevStopIndex < busRoute.size()) // if the previous stop index is less than the last stop index (handle null reference)
+        int stopsleft = countStopsAway(busRoute);
+        if (stopsleft != -1) // if the previous stop index is less than the last stop index (handle null reference)
         {
-            stopsleft = busRoute.size() - PrevStopIndex;
             if (stopsleft<=stopsAway)
             {
                 return true;
