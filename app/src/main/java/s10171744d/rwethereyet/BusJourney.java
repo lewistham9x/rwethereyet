@@ -1,6 +1,7 @@
 package s10171744d.rwethereyet;
 
 import android.Manifest;
+import android.app.Notification;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -17,6 +18,7 @@ import com.google.android.gms.location.DetectedActivity;
 
 import java.util.List;
 
+import br.com.goncalves.pugnotification.notification.PugNotification;
 import io.nlopez.smartlocation.OnActivityUpdatedListener;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
@@ -40,8 +42,10 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     Integer LastStopIndex; //destination
     Integer FirstStopIndex;
     Integer PrevStopIndex;
-
     Integer StopsTilAlert;
+
+    String notifTit;
+    String notifBTxt;
 
     List<BusStop> busRoute;
 
@@ -63,6 +67,9 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         StopsTilAlert = 1; // default value for number of stops before alerting user to get off
 
         busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
+
+        notifTit="Are we there yet?";
+        notifBTxt="";
 
 
         //trim the busroute to end with destination
@@ -186,6 +193,8 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
             }
             else if (stopStatus==2) //user is reaching destination
             {
+                Log.d("test if spam","spamlol");
+
                 //display the last stop if the previous stop has been updated
                 showPreviousStop(busRoute,PrevStopIndex);
 
@@ -193,16 +202,25 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
 
                 Log.d("TESTING","You are reaching the destination in 1 stop");
                 //alert user that that they are within the alert distance from destination
-                tv1.setText("You are reaching the destination in " + StopsTilAlert +"stops");
-
-
+                String msg;
+                if (StopsTilAlert>1)
+                {
+                    msg = "You are reaching the destination in " + StopsTilAlert + " stops";
+                }
+                else
+                {
+                    msg = "You are reaching the destination in " + StopsTilAlert + " stop";
+                }
+                tv1.setText(msg);
+                buildNotification(msg);
             }
             else if (stopStatus==3)//check is user has reached destination
             {
                 showPreviousStop(busRoute,PrevStopIndex);
                 //send notification to alert user that they reached -maybe change activity to ad?
-                tv1.setText("You have reached your destination");
-
+                String msg="You have reached your destination";
+                tv1.setText(msg);
+                buildNotification(msg);
             }
         }
     }
@@ -328,6 +346,20 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         String output = String.format("Last Bus Stop: Bus Stop %o\n\nCode: %s\nName: %s\n",prevStopIndex,code,name);
 
         tv2.setText(output);
+    }
+
+    private void buildNotification(String msg)
+    {
+        PugNotification.with(this)
+                .load()
+                .title(notifTit)
+                .message(msg)
+                //.bigTextStyle(notifBTxt)
+                .smallIcon(R.mipmap.ic_launcher)
+                .largeIcon(R.mipmap.ic_launcher)
+                .flags(Notification.DEFAULT_ALL)
+                .simple()
+                .build();
     }
 
 
