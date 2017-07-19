@@ -134,7 +134,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
             {
                 //debug2.setText(FirstStopIndex.toString() );
 
-                busRoute = busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
+                busRoute = busRoute.subList(FirstStopIndex, busRoute.size()-1);//trim the bus list to only include the first stop (destination stop alr trimmed)
                 PrevStopIndex = 0;
                 tv2.setText("Found starting bus stop: "+busRoute.get(0).getName());
 
@@ -145,7 +145,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
                 showPreviousStop(busRoute,PrevStopIndex);
 
                 //display the number of stops left to destination
-                tv1.setText("Stops Left: " + countStopsAway(busRoute));
+                tv1.setText("Stops Left: " + countStopsAway(busRoute,PrevStopIndex));
 
                 /*
                 //show distance to next stop - most likely to be removed since this shows displacement, not distance
@@ -172,7 +172,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
                 showPreviousStop(busRoute,PrevStopIndex);
 
                 //display the number of stops left to destination
-                tv1.setText("Stops Left: " + countStopsAway(busRoute));
+                tv1.setText("Stops Left: " + countStopsAway(busRoute,PrevStopIndex));
 
                 /*
                 //show distance to next stop - most likely to be removed since this shows displacement, not distance
@@ -280,36 +280,33 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     {
         if (isAtStop(busRoute,prevStopIndex+1,location)) //if user gps is near the next bus stop <---error, when reach the end of the list, cant ++ prevstop anymore
         {
-            Integer stopsAway = countStopsAway(busRoute);
-            if (stopsAway==0)//if the previous stop was destination stop
+            if (countStopsAway(busRoute,prevStopIndex+1)==0) //if the next stop is the destination
             {
                 return 3;
             }
-            else if (stopsAway<=StopsTilAlert) //if within the alert distance AKA reaching destination
+            else if (countStopsAway(busRoute,prevStopIndex+1)<=StopsTilAlert) //if the next stop is the within the range of alerting
             {
                 PrevStopIndex++;
                 return 2;
             }
-            else if (stopsAway>0) //if its not at destination, increase prevstopindex
+            else//if next stop found
             {
                 PrevStopIndex++;
                 return 1;
             }
-            else //if theres error in which previous stop index is past the destination
-            {
-                Log.d("ERROR","Last stop index is past destination??");
-                return -1;
-            }
         }
-        return 0;
+        else
+        {
+            return 0; //do nothing if theres no change in previous bus stop
+        }
     }
 
-    private Integer countStopsAway(List<BusStop> busRoute)
+    private Integer countStopsAway(List<BusStop> busRoute, Integer stopIndex)
     {
         int stopsleft;
-        if (PrevStopIndex <= busRoute.size()) // if the previous stop index is less than the last stop index (handle null reference)
+        if (stopIndex <= busRoute.size()-1) // if the previous stop index is less than the last stop index (handle null reference)
         {
-            stopsleft = busRoute.size() - PrevStopIndex;
+            stopsleft = busRoute.size()-1 - stopIndex;
         }
         else //error cos the previous stop has past by the final stop
         {
