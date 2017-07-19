@@ -66,7 +66,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
 
 
         //trim the busroute to end with destination
-        busRoute = busRoute.subList(0, LastStopIndex);
+        busRoute = busRoute.subList(0, LastStopIndex+1);
 
 
 
@@ -134,7 +134,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
             {
                 //debug2.setText(FirstStopIndex.toString() );
 
-                busRoute = busRoute.subList(FirstStopIndex, busRoute.size()-1);//trim the bus list to only include the first stop (destination stop alr trimmed)
+                busRoute = busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
                 PrevStopIndex = 0;
                 tv2.setText("Found starting bus stop: "+busRoute.get(0).getName());
 
@@ -278,13 +278,13 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     private int updatePreviousStop(List<BusStop> busRoute, Location location) //returns a int value if previous stop is updated/reached destination
     //0 = no change in bus stop, 1 = change in bus stop, 2= reaching destination, 3= destination has been reached
     {
-        if (isAtStop(busRoute,PrevStopIndex+1,location)) //if user gps is near the next bus stop <---error, when reach the end of the list, cant ++ prevstop anymore
+        if (isAtStop(busRoute,PrevStopIndex,location)) //if user gps is near the next bus stop <---error, when reach the end of the list, cant ++ prevstop anymore
         {
-            if (countStopsAway(busRoute,PrevStopIndex+1)==0) //if the next stop is the destination
+            if (countStopsAway(busRoute,PrevStopIndex)==0) //if the stop is the destination
             {
                 return 3;
             }
-            else if (countStopsAway(busRoute,PrevStopIndex+1)<=StopsTilAlert) //if the next stop is the within the range of alerting
+            else if (countStopsAway(busRoute,PrevStopIndex+1)<=StopsTilAlert) //if the stop is the within the range of alerting
             {
                 PrevStopIndex++;
                 return 2;
