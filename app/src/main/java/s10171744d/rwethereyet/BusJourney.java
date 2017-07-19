@@ -164,7 +164,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         }
         else//lol this is p unoptimised - this is run after first stop has been found, and will keep check+updating everytime location is updated
         {
-            int stopStatus = updatePreviousStop(busRoute,PrevStopIndex,location);// update the previous bus stop
+            int stopStatus = updatePreviousStop(busRoute,location);// update the previous bus stop
 
             if (stopStatus==1) //check if user has reached next stop
             {
@@ -275,16 +275,16 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
             debug1.setText("Null location");
         }
     }
-    private int updatePreviousStop(List<BusStop> busRoute, Integer prevStopIndex, Location location) //returns a int value if previous stop is updated/reached destination
+    private int updatePreviousStop(List<BusStop> busRoute, Location location) //returns a int value if previous stop is updated/reached destination
     //0 = no change in bus stop, 1 = change in bus stop, 2= reaching destination, 3= destination has been reached
     {
-        if (isAtStop(busRoute,prevStopIndex+1,location)) //if user gps is near the next bus stop <---error, when reach the end of the list, cant ++ prevstop anymore
+        if (isAtStop(busRoute,PrevStopIndex+1,location)) //if user gps is near the next bus stop <---error, when reach the end of the list, cant ++ prevstop anymore
         {
-            if (countStopsAway(busRoute,prevStopIndex+1)==0) //if the next stop is the destination
+            if (countStopsAway(busRoute,PrevStopIndex+1)==0) //if the next stop is the destination
             {
                 return 3;
             }
-            else if (countStopsAway(busRoute,prevStopIndex+1)<=StopsTilAlert) //if the next stop is the within the range of alerting
+            else if (countStopsAway(busRoute,PrevStopIndex+1)<=StopsTilAlert) //if the next stop is the within the range of alerting
             {
                 PrevStopIndex++;
                 return 2;
