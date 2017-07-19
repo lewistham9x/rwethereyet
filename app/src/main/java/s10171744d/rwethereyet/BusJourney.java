@@ -30,6 +30,8 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     TextView tv1;
     TextView tv2;
 
+    TextView debug1;
+
     private LocationGooglePlayServicesProvider provider;
 
     private static final int LOCATION_PERMISSION_ID = 1001;
@@ -51,6 +53,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
 
         tv1 = (TextView)findViewById(R.id.textView);
         tv2 = (TextView)findViewById(R.id.textView2);
+        debug1 = (TextView)findViewById(R.id.tvDebug);
 
         LastStopIndex = Control.selectedBusIndex;
         FirstStopIndex = null;
@@ -104,6 +107,11 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     @Override
     public void onLocationUpdated(Location location) { //whenever update location[
 
+        //test set location to dover stn
+
+
+
+        showLocation(location);
 
         if (FirstStopIndex == null)
         {
@@ -209,17 +217,17 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         }
     }
 
-    //private void showLocation(Location location) {
-    //    if (location != null) {
-    //        final String text = String.format("Latitude %.6f, Longitude %.6f",
-    //                location.getLatitude(),
-    //                location.getLongitude());
-    //        tv1.setText(text);
-//
-    //    } else {
-    //        tv1.setText("Null location");
-    //    }
-    //}
+    private void showLocation(Location location) {
+        if (location != null) {
+            final String text = String.format("Latitude %.6f, Longitude %.6f",
+                    location.getLatitude(),
+                    location.getLongitude());
+            debug1.setText(text);
+
+        } else {
+            debug1.setText("Null location");
+        }
+    }
     private int updatePreviousStop(List<BusStop> busRoute, Integer prevStopIndex, Location location) //returns a int value if previous stop is updated/reached destination
     //0 = no change in bus stop, 1 = change in bus stop, 2= destination has been reached
     {
