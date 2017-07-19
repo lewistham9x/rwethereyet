@@ -103,7 +103,6 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
 
     @Override
     public void onLocationUpdated(Location location) { //whenever update location[
-        //withinRadius(,,1.37016500002901,103.8953599999,25);
 
 
         if (FirstStopIndex == null)
@@ -145,6 +144,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
             }
             else if (stopStatus==2)//check is user has reached destination
             {
+                showPreviousStop(busRoute,PrevStopIndex);
                 //send notification to alert user that they reached
                 tv1.setText("You have reached your destination");
 
@@ -198,7 +198,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         float[] dist  = new float[1];
         Location.distanceBetween(startLatitude,startLongitude,endLatitude,endLongitude,dist);
 
-        Log.d("dist",dist[0]+"");
+        //Log.d("dist",dist[0]+"");
         if (dist[0]<=radius)
         {
             return true;
@@ -251,7 +251,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         {
             stopsleft = busRoute.size() - PrevStopIndex;
         }
-        else        //error cos the previous stop has past by the final stop
+        else //error cos the previous stop has past by the final stop
         {
             //handle errors?
             stopsleft = -1;
@@ -265,8 +265,8 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         BusStop prevStop = busRoute.get(prevStopIndex);
         String code = prevStop.getCode();
         String name = prevStop.getName();
-        double lat = prevStop.getLat();
-        double lon = prevStop.getLon();
+        //double lat = prevStop.getLat();
+        //double lon = prevStop.getLon();
 
         String output = String.format("Last Bus Stop: Bus Stop %o\n\nCode: %s\nName: %s\n",prevStopIndex,code,name);
 
@@ -316,7 +316,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         builder.show();
     }
 
-    //@Override
+    //@Override //commented out since onstop can be triggered when send to home
     //protected void onStop() {
     //    stopLocation();
     //    super.onStop();
