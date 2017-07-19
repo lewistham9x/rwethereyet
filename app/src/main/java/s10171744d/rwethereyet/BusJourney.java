@@ -31,6 +31,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     TextView tv2;
 
     TextView debug1;
+    TextView debug2;
 
     private LocationGooglePlayServicesProvider provider;
 
@@ -54,6 +55,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         tv1 = (TextView)findViewById(R.id.textView);
         tv2 = (TextView)findViewById(R.id.textView2);
         debug1 = (TextView)findViewById(R.id.tvDebug);
+        debug2 = (TextView)findViewById(R.id.tvDebug2);
 
         LastStopIndex = Control.selectedBusIndex;
         FirstStopIndex = null;
@@ -64,7 +66,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
 
 
         //trim the busroute to end with destination
-        busRoute.subList(0, LastStopIndex);
+        busRoute = busRoute.subList(0, LastStopIndex);
 
 
 
@@ -108,6 +110,8 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     public void onLocationUpdated(Location location) { //whenever update location[
 
         //test set location to dover stn
+        location.setLatitude(1.31167951129602);
+        location.setLongitude(103.77868390552867);
 
 
 
@@ -117,7 +121,9 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         {
             if (findFirstStop(location,busRoute)) //if first stop is finally found, will trim
             {
-                busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
+                debug2.setText(FirstStopIndex.toString() );
+
+                busRoute = busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
                 PrevStopIndex = 0;
                 tv2.setText("Found starting bus stop: "+busRoute.get(0).getName());
             }
