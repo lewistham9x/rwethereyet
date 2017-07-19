@@ -1,5 +1,6 @@
 package s10171744d.rwethereyet;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.goncalves.pugnotification.notification.PugNotification;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Network.getBusRouterService().listRepos(busServiceNo.getText()+"").enqueue(new Callback<BusRouterServiceResponse>() {
                     @Override
                     public void onResponse(Call<BusRouterServiceResponse> call, Response<BusRouterServiceResponse> response) {

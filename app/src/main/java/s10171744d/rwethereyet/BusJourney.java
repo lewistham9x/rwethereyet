@@ -5,12 +5,15 @@ import android.app.Notification;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.Image;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -34,6 +37,8 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
 
     TextView debug1;
     TextView debug2;
+
+    ImageView ivStop;
 
     private LocationGooglePlayServicesProvider provider;
 
@@ -60,6 +65,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         tv2 = (TextView)findViewById(R.id.textView2);
         debug1 = (TextView)findViewById(R.id.tvDebug);
         debug2 = (TextView)findViewById(R.id.tvDebug2);
+        ivStop = (ImageView) findViewById(R.id.ivStop);
 
         LastStopIndex = Control.selectedBusIndex;
         FirstStopIndex = null;
@@ -116,7 +122,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     @Override
     public void onLocationUpdated(Location location) { //whenever update location[
 
-        /*
+        /* DEBUGGING
         //test set location to dover stn - same coords as json
         location.setLatitude(1.31167951129602);
         location.setLongitude(103.77868390552867);
@@ -125,16 +131,16 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         location.setLatitude(1.3142989);
         location.setLongitude(103.7784209);
 
-        */
+
 
         //set location to the first bus stop in list
         BusStop bs = busRoute.get(0);
-
         location.setLatitude(bs.getLat());
         location.setLongitude(bs.getLon());
 
-        showLocation(location);
 
+        //showLocation(location);
+        */
         if (FirstStopIndex == null)
         {
             if (findFirstStop(location,busRoute)) //if first stop is finally found, will trim
@@ -189,18 +195,16 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
                 Location.distanceBetween(nextStop.getLat(),nextStop.getLon(),location.getLatitude(),location.getLongitude(),dist);
                 debug2.setText(dist[0]+"");
                 */
+                ivStop.setVisibility(View.GONE);
 
             }
             else if (stopStatus==2) //user is reaching destination
             {
-                Log.d("test if spam","spamlol");
-
                 //display the last stop if the previous stop has been updated
                 showPreviousStop(busRoute,PrevStopIndex);
 
 
 
-                Log.d("TESTING","You are reaching the destination in 1 stop");
                 //alert user that that they are within the alert distance from destination
                 String msg;
                 if (StopsTilAlert>1)
@@ -212,6 +216,9 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
                     msg = "You are reaching the destination in " + StopsTilAlert + " stop";
                 }
                 tv1.setText(msg);
+
+                ivStop.setVisibility(View.VISIBLE);
+
                 buildNotification(msg);
             }
             else if (stopStatus==3)//check is user has reached destination
@@ -220,7 +227,11 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
                 //send notification to alert user that they reached -maybe change activity to ad?
                 String msg="You have reached your destination";
                 tv1.setText(msg);
+
+                ivStop.setVisibility(View.VISIBLE);
+
                 buildNotification(msg);
+                stopLocation(); //end the location updates
             }
         }
     }
