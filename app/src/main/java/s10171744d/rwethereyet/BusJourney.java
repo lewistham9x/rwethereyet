@@ -139,6 +139,8 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
                 tv2.setText("Found starting bus stop: "+busRoute.get(0).getName());
 
                 //need to run stuff to be similar to update bus stop since this is also updating, but doesnt call the update method
+
+
                 //display the last stop if the previous stop has been updated
                 showPreviousStop(busRoute,PrevStopIndex);
 
@@ -236,7 +238,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         double curLat = currentlocation.getLatitude();
         double curLon = currentlocation.getLongitude();
 
-        if (withinRadius(stoplat,stoplon,curLat,curLon,50)) //10 is too small radius for checking nearby bus stop
+        if (withinRadius(stoplat,stoplon,curLat,curLon,50)) //10 is too small radius for checking nearby bus stop, 50 is perfect
         {
             return true;
         }
@@ -276,7 +278,7 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     private int updatePreviousStop(List<BusStop> busRoute, Integer prevStopIndex, Location location) //returns a int value if previous stop is updated/reached destination
     //0 = no change in bus stop, 1 = change in bus stop, 2= reaching destination, 3= destination has been reached
     {
-        if (isAtStop(busRoute,prevStopIndex+1,location)) //if user gps is near the next bus stop
+        if (isAtStop(busRoute,prevStopIndex+1,location)) //if user gps is near the next bus stop <---error, when reach the end of the list, cant ++ prevstop anymore
         {
             Integer stopsAway = countStopsAway(busRoute);
             if (stopsAway==0)//if the previous stop was destination stop
