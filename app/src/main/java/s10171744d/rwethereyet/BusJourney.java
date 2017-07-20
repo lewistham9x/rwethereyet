@@ -100,7 +100,7 @@ public class BusJourney extends AppCompatActivity{
                     String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
                     tvReachYet.setText("no");
-                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stops");
+                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
                     tvPrevStop.setText(stopinfo);
 
                     ivStop.setVisibility(View.GONE);
@@ -112,7 +112,7 @@ public class BusJourney extends AppCompatActivity{
                     String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
                     tvReachYet.setText("soon");
-                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stop");
+                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
                     tvPrevStop.setText(stopinfo);
 
                     ivStop.setVisibility(View.VISIBLE);
@@ -138,7 +138,7 @@ public class BusJourney extends AppCompatActivity{
                     String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
                     tvReachYet.setText("!!!");
-                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stops");
+                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
                     tvPrevStop.setText(stopinfo);
 
                     ivStop.setVisibility(View.GONE);
