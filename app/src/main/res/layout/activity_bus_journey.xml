@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="30"
-        android:text="no"
+        android:text="..."
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display4" />
 
@@ -21,23 +21,27 @@
         android:id="@+id/tvStopsLeft"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="15"
+        android:layout_weight="10"
         android:text="loading.."
-        android:textAlignment="center" />
+        android:textAlignment="textEnd"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="italic" />
 
     <TextView
         android:id="@+id/tvPrevStop"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="15"
+        android:layout_weight="10"
         android:text="loading.."
-        android:textAlignment="center" />
+        android:textAlignment="textEnd"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/ivStop"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="40"
+        android:layout_weight="50"
         android:visibility="gone"
         app:srcCompat="@drawable/stop" />
 </LinearLayout>

@@ -93,7 +93,7 @@ public class BusJourney extends AppCompatActivity{
                 {
                     BusStop prevStop = UpdateData.prevStop;
 
-                    String stopinfo = String.format("Previous Stop: %s(%s)",prevStop.getName(),prevStop.getCode());
+                    String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
                     tvReachYet.setText("no");
                     tvStopsLeft.setText(UpdateData.stopsLeft +" more stops");
@@ -105,10 +105,10 @@ public class BusJourney extends AppCompatActivity{
                 {
                     BusStop prevStop = UpdateData.prevStop;
 
-                    String stopinfo = String.format("Previous Stop: %s(%s)",prevStop.getName(),prevStop.getCode());
+                    String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
                     tvReachYet.setText("soon");
-                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stops");
+                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stop");
                     tvPrevStop.setText(stopinfo);
 
                     ivStop.setVisibility(View.VISIBLE);
@@ -118,7 +118,7 @@ public class BusJourney extends AppCompatActivity{
                 {
                     BusStop prevStop = UpdateData.prevStop;
 
-                    String stopinfo = String.format("Previous Stop: %s(%s)",prevStop.getName(),prevStop.getCode());
+                    String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
                     tvReachYet.setText("yes");
                     tvStopsLeft.setText("");
@@ -131,9 +131,9 @@ public class BusJourney extends AppCompatActivity{
                 {
                     BusStop prevStop = UpdateData.prevStop;
 
-                    String stopinfo = String.format("First Stop: %s(%s)",prevStop.getName(),prevStop.getCode());
+                    String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
-                    tvReachYet.setText("you just started your journey");
+                    tvReachYet.setText("!!!");
                     tvStopsLeft.setText(UpdateData.stopsLeft +" more stops");
                     tvPrevStop.setText(stopinfo);
 
@@ -142,9 +142,9 @@ public class BusJourney extends AppCompatActivity{
 
                 else if (status == -1)
                 {
-                    tvReachYet.setText("searching for bus stop...");
-                    tvStopsLeft.setText("your journey will start once you are near a bus stop within your selected route");
-                    tvPrevStop.setText("");
+                    tvReachYet.setText("...");
+                    tvStopsLeft.setText("searching for bus stop");
+                    tvPrevStop.setText("your journey will start once you are near a bus stop within your selected route");
 
                     ivStop.setVisibility(View.GONE);
                 }

@@ -108,10 +108,10 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
 
         //will need to return a value back to the mainactivity based off here
 
-        /* for testing purposes (set the user location to be the first stop of the list)
+         //for testing purposes (set the user location to be the first stop of the list)
         location.setLatitude(busRoute.get(0).getLat());
         location.setLongitude(busRoute.get(0).getLon());
-        */
+
 
         UpdateData.stopStatus = 0;
 
