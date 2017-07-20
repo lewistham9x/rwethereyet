@@ -1,9 +1,12 @@
 package s10171744d.rwethereyet.model;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.app.Notification;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.view.View;
 
 import com.google.android.gms.location.DetectedActivity;
@@ -39,6 +42,8 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
     String notifmsg = "No";
 
     Integer status;
+
+    Intent intent; //for accessing intent from busjourney in other methods
     /*
         status returns an integer based on the status of the busstop update, used for returning to busjourney
         0 = no difference
@@ -58,6 +63,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
     @Override
     protected void onHandleIntent(Intent intent) {
         // This describes what will happen when service is triggered
+        this.intent = intent;
     }
 
 
@@ -135,6 +141,15 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
 
             status = stopStatus;
         }
+
+        //send call to busjourney
+        ResultReceiver rec = intent.getParcelableExtra("receiver");
+        // To send a message to the Activity, create a pass a Bundle
+        Bundle bundle = new Bundle();
+        bundle.putInt("UpdateStatus",status);
+        // Here we call send passing a resultCode and the bundle of extras
+        rec.send(Activity.RESULT_OK,bundle);
+
     }
 
 
