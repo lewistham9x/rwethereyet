@@ -30,7 +30,7 @@ import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProv
 import s10171744d.rwethereyet.model.BusStop;
 import s10171744d.rwethereyet.model.Control;
 
-public class BusJourney extends AppCompatActivity implements OnLocationUpdatedListener, OnActivityUpdatedListener {
+public class    BusJourney extends AppCompatActivity implements OnLocationUpdatedListener, OnActivityUpdatedListener {
 
     TextView tv1;
     TextView tv2;
@@ -48,6 +48,8 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
     Integer FirstStopIndex;
     Integer PrevStopIndex;
     Integer StopsTilAlert;
+
+    Integer updatecount; //for debugging
 
     String notifTit;
     String notifBTxt;
@@ -76,6 +78,11 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
 
         notifTit="Are we there yet?";
         notifBTxt="";
+
+
+
+
+        updatecount=0;
 
 
         //trim the busroute to end with destination
@@ -137,10 +144,23 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
         BusStop bs = busRoute.get(0);
         location.setLatitude(bs.getLat());
         location.setLongitude(bs.getLon());
-
-
-        //showLocation(location);
         */
+
+        showLocation(location);
+
+
+        /*
+        //show distance to next stop - most likely to be removed since this shows displacement, not distance
+        //BusStop nextStop = busRoute.get(PrevStopIndex);
+        float[] dist  = new float[1];
+
+        Location.distanceBetween(1.33239231,103.77785882,1.33256841,103.77786468,dist);
+        debug2.setText(dist[0]+"");
+        */
+
+        updatecount++;
+        debug1.setText(updatecount+"");
+
         if (FirstStopIndex == null)
         {
             if (findFirstStop(location,busRoute)) //if first stop is finally found, will trim
@@ -160,14 +180,6 @@ public class BusJourney extends AppCompatActivity implements OnLocationUpdatedLi
                 //display the number of stops left to destination
                 tv1.setText("Stops Left: " + countStopsAway(busRoute,PrevStopIndex));
 
-                /*
-                //show distance to next stop - most likely to be removed since this shows displacement, not distance
-                BusStop nextStop = busRoute.get(PrevStopIndex+1);
-                float[] dist  = new float[1];
-
-                Location.distanceBetween(nextStop.getLat(),nextStop.getLon(),location.getLatitude(),location.getLongitude(),dist);
-                debug2.setText(dist[0]+"");
-                */
             }
             else
             {

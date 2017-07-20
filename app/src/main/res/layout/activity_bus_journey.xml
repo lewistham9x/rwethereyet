@@ -19,7 +19,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="1"
         android:text="shit" />
     <TextView
         android:id="@+id/tvDebug"
@@ -27,14 +27,14 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="waddup"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
     <TextView
         android:id="@+id/tvDebug2"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="kms"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
     <ImageView
         android:id="@+id/ivStop"
         android:layout_width="wrap_content"
