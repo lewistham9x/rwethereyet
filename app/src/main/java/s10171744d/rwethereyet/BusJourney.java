@@ -137,7 +137,7 @@ public class BusJourney extends AppCompatActivity{
                     String stopinfo = String.format("Last Bus Stop\nName: %s\nCode: %s",prevStop.getName(),prevStop.getCode());
                     tv1.setText(stopinfo);
 
-                    tv2.setText("You just started your journey.");
+                    tv2.setText("You just started your journey");
 
                     ivStop.setVisibility(View.GONE);
                 }

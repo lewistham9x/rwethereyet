@@ -77,8 +77,8 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
         //LastStopIndex = 69420; ///////!!!!<<<<need to change to grab the selected value from the activity
 
         LastStopIndex = Control.selectedBusIndex;
-        UpdateData.destStop=busRoute.get(LastStopIndex); //get the data of the destination stop
         busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
+        UpdateData.destStop=busRoute.get(LastStopIndex); //get the data of the destination stop
         busRoute = busRoute.subList(0, LastStopIndex+1); //trim the busroute to end with destination
 
 
@@ -108,6 +108,8 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
                 busRoute = busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
                 PrevStopIndex = 0;
                 status = 4;
+                UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
+                UpdateData.prevStop=busRoute.get(PrevStopIndex);
             }
 
             else
@@ -142,11 +144,11 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
             }
 
             status = stopStatus;
+            UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
+            UpdateData.prevStop=busRoute.get(PrevStopIndex);
         }
         //maybe can only send and update if status != 0 - but location wont constantly update
         UpdateData.stopStatus=status;
-        UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
-        UpdateData.prevStop=busRoute.get(PrevStopIndex);
         UpdateData.curLoc=location;
         sendBroadcast(new Intent("LocationUpdated"));
 
