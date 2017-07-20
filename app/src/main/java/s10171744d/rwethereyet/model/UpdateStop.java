@@ -130,31 +130,26 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
         {
             UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
             UpdateData.prevStop=busRoute.get(PrevStopIndex);
+            UpdateData.curLoc=location;
+            UpdateData.stopStatus = updatePreviousStop(busRoute,location);// update the previous bus stop
 
-            int stopStatus = updatePreviousStop(busRoute,location);// update the previous bus stop
-
-            if (stopStatus==1) //check if user has reached next stop
+            if (UpdateData.stopStatus==1) //check if user has reached next stop
             {
-
             }
-            else if (stopStatus==2) //user is reaching destination
+            else if (UpdateData.stopStatus==2) //user is reaching destination
             {
                 //build a notification to alert
                 notifmsg="You're reaching in <" + StopsTilAlert +" stops";
                 buildNotification(notifmsg);
             }
-            else if (stopStatus==3)//check is user has reached destination
+            else if (UpdateData.stopStatus==3)//check is user has reached destination
             {
                 //build a notification to alert
                 notifmsg="Yes";
                 buildNotification(notifmsg);
                 stopSelf();// end the service once destination reached
             }
-            status = stopStatus;
         }
-        //maybe can only send and update if status != 0 - but location wont constantly update
-        UpdateData.stopStatus=status;
-        UpdateData.curLoc=location;
         sendBroadcast(new Intent("LocationUpdated"));
 
     }
