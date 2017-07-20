@@ -137,6 +137,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
                 notifmsg="Yes";
                 buildNotification(notifmsg);
                 stopLocation(); //end the location updates
+                stopSelf();// end the service once destination reached
             }
 
             status = stopStatus;

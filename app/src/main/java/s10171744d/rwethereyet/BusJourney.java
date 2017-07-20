@@ -128,6 +128,18 @@ public class BusJourney extends AppCompatActivity{
                     tv2.setText("Yes");
 
                     ivStop.setVisibility(View.VISIBLE);
+
+                }
+                if (status == 4)
+                {
+                    BusStop prevStop = UpdateData.prevStop;
+
+                    String stopinfo = String.format("Last Bus Stop\nName: %s\nCode: %s",prevStop.getName(),prevStop.getCode());
+                    tv1.setText(stopinfo);
+
+                    tv2.setText("You just started your journey");
+
+                    ivStop.setVisibility(View.GONE);
                 }
 
             }
@@ -192,6 +204,8 @@ public class BusJourney extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         //end the service
+        Intent i = new Intent(this, UpdateStop.class);
+        stopService(i);
 
         super.onDestroy();
         Log.d("detected", "onDestroyevent");
