@@ -43,7 +43,6 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
 
     Integer status;
 
-    Intent intent; //for accessing intent from busjourney in other methods
     /*
         status returns an integer based on the status of the busstop update, used for returning to busjourney
         0 = no difference
@@ -63,7 +62,6 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
     @Override
     protected void onHandleIntent(Intent intent) {
         // This describes what will happen when service is triggered
-        this.intent = intent;
     }
 
 
@@ -78,6 +76,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
         //LastStopIndex = 69420; ///////!!!!<<<<need to change to grab the selected value from the activity
 
         LastStopIndex = Control.selectedBusIndex;
+        UpdateData.destStop=busRoute.get(LastStopIndex); //get the data of the destination stop
         busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
         busRoute = busRoute.subList(0, LastStopIndex+1); //trim the busroute to end with destination
 
@@ -95,7 +94,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
 
     @Override
     public void onLocationUpdated(Location location) {
-        buildNotification("service launched");
+        //buildNotification("service launched");
 
         //will need to return a value back to the mainactivity based off here
 
@@ -142,15 +141,12 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
 
             status = stopStatus;
         }
-
-        //send call to busjourney
-        ResultReceiver rec = intent.getParcelableExtra("receiver");
-        // To send a message to the Activity, create a pass a Bundle
-        Bundle bundle = new Bundle();
-        //bundle.putInt("UpdateStatus",status);
-        bundle.putInt("UpdateStatus",2);
-        // Here we call send passing a resultCode and the bundle of extras
-        rec.send(Activity.RESULT_OK,bundle);
+        //maybe can only send and update if status != 0 - but location wont constantly update
+        UpdateData.stopStatus=status;
+        UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
+        UpdateData.prevStop=busRoute.get(PrevStopIndex);
+        UpdateData.curLoc=location;
+        sendBroadcast(new Intent("LocationUpdated"));
 
     }
 
@@ -169,7 +165,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
         {
             stoplat = bs.getLat();
             stoplon = bs.getLon();
-            if (withinRadius(stoplat,stoplon,curLat,curLon,10))
+            if (withinRadius(stoplat,stoplon,curLat,curLon,100))//50 is minimum for proper tracking
             {
                 succ = true;
                 FirstStopIndex = stopIndex;

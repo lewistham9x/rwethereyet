@@ -2,8 +2,11 @@ package s10171744d.rwethereyet;
 
 import android.Manifest;
 import android.app.Notification;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.media.Image;
@@ -26,12 +29,15 @@ import java.util.List;
 
 import s10171744d.rwethereyet.model.BusStop;
 import s10171744d.rwethereyet.model.Control;
+import s10171744d.rwethereyet.model.UpdateData;
 import s10171744d.rwethereyet.model.UpdateStop;
-import s10171744d.rwethereyet.model.UpdateStopReceiver;
 
 public class BusJourney extends AppCompatActivity{
 
-    public UpdateStopReceiver stopReceiver; //setup receiver from update stop service
+    //public UpdateStopReceiver stopReceiver; //setup receiver from update stop service
+
+
+    private DataUpdateReceiver dataUpdateReceiver;
 
     TextView tv1;
     TextView tv2;
@@ -66,12 +72,74 @@ public class BusJourney extends AppCompatActivity{
         {
 
             //start the service if location permissions granted
-            setupServiceReceiver();
+            //setupServiceReceiver();
+
+            if (dataUpdateReceiver == null) dataUpdateReceiver = new DataUpdateReceiver();
+            IntentFilter intentFilter = new IntentFilter("LocationUpdated");
+            registerReceiver(dataUpdateReceiver, intentFilter);
+
+
             Intent i = new Intent(this, UpdateStop.class);
             startService(i);
         }
     }
     // callback for when data is received from service (new data from service)
+
+    private class DataUpdateReceiver extends BroadcastReceiver { //receiver to check if theres any changes in the thing
+        @Override
+        public void onReceive(Context context, Intent intent) {  //triggered when data is sent from service
+            if (intent.getAction().equals("LocationUpdated")) {
+                //show new location (DEBUG)
+                showLocation(UpdateData.curLoc);
+
+                Integer status = UpdateData.stopStatus;
+
+                //check the status of bus stop
+                if (status == 1)
+                {
+                    BusStop prevStop = UpdateData.prevStop;
+
+                    String stopinfo = String.format("Last Bus Stop\nName: %s\nCode: %s",prevStop.getName(),prevStop.getCode());
+                    tv1.setText(stopinfo);
+
+                    tv2.setText("No, "+UpdateData.stopsLeft +" more stops");
+
+                    ivStop.setVisibility(View.GONE);
+                }
+                else if (status == 2)
+                {
+                    BusStop prevStop = UpdateData.prevStop;
+
+                    String stopinfo = String.format("Last Bus Stop\nName: %s\nCode: %s",prevStop.getName(),prevStop.getCode());
+                    tv1.setText(stopinfo);
+
+                    tv2.setText("Soon, "+UpdateData.stopsLeft +" more stops");
+
+                    ivStop.setVisibility(View.VISIBLE);
+
+                }
+                else if (status == 3)
+                {
+                    BusStop prevStop = UpdateData.prevStop;
+
+                    String stopinfo = String.format("Last Bus Stop\nName: %s\nCode: %s",prevStop.getName(),prevStop.getCode());
+                    tv1.setText(stopinfo);
+
+                    tv2.setText("Yes");
+
+                    ivStop.setVisibility(View.VISIBLE);
+                }
+
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver);
+    }
+/*
     public void setupServiceReceiver() {
         stopReceiver = new UpdateStopReceiver(new Handler());
         // This is where we specify what happens when data is received from the service
@@ -87,6 +155,8 @@ public class BusJourney extends AppCompatActivity{
         });
     }
 
+    */
+
     private void showLocation(Location location) {
         if (location != null) {
             final String text = String.format("Latitude %.6f, Longitude %.6f",
@@ -98,21 +168,6 @@ public class BusJourney extends AppCompatActivity{
             debug1.setText("Null location");
         }
     }
-
-
-    private void showPreviousStop(List<BusStop> busRoute, Integer prevStopIndex)
-    {
-        BusStop prevStop = busRoute.get(prevStopIndex);
-        String code = prevStop.getCode();
-        String name = prevStop.getName();
-        //double lat = prevStop.getLat();
-        //double lon = prevStop.getLon();
-
-        String output = String.format("Last Bus Stop: Bus Stop %o\n\nCode: %s\nName: %s\n",prevStopIndex,code,name);
-
-        tv2.setText(output);
-    }
-
 
     @Override
     public void onBackPressed() {
