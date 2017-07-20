@@ -36,7 +36,7 @@ public class BusJourney extends AppCompatActivity{
 
     //public UpdateStopReceiver stopReceiver; //setup receiver from update stop service
 
-
+    //receiver for broadcasts, to check if the service has updated location yet, so that can set view accordingly
     private DataUpdateReceiver dataUpdateReceiver;
 
     TextView tv1;
@@ -48,10 +48,7 @@ public class BusJourney extends AppCompatActivity{
     ImageView ivStop;
 
 
-    private static final int LOCATION_PERMISSION_ID = 1001;
-
-
-
+    private static final int LOCATION_PERMISSION_ID = 1001; //setting of the location permission id
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +79,7 @@ public class BusJourney extends AppCompatActivity{
 
 
 
-    //register and unregister listener for updates if the app is in foreground/background
+    //register and unregister listener for updates if the app is in foreground/background to prevent errors
     @Override
     protected void onResume() {
         super.onResume();
@@ -158,6 +155,7 @@ public class BusJourney extends AppCompatActivity{
 
                     ivStop.setVisibility(View.GONE);
                 }
+
                 else if (status == -1)
                 {
                     String stopinfo = String.format("Searching for bus stop...");
@@ -192,7 +190,7 @@ public class BusJourney extends AppCompatActivity{
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finish();
+                finish(); //will go to ondestroy, then from there stop the service
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

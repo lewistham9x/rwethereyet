@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 import java.util.ArrayList;
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     List<BusStop> BusStopList;
     ListView busRouteListView1;
     ListView busRouteListView2;
+    TextView tvRoute1;
+    TextView tvRoute2;
+
     EditText busServiceNo;
     Button queryButton;
 
@@ -44,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         busServiceNo = (EditText) findViewById(R.id.txtServiceNo);
         busRouteListView1 = (ListView) findViewById(R.id.busRouteListView1);
         busRouteListView2 = (ListView) findViewById(R.id.busRouteListView2);
+        tvRoute1 = (TextView) findViewById(R.id.tvRoute1);
+        tvRoute2 = (TextView) findViewById(R.id.tvRoute2);
 
         Network.getBusRouterService().listAllStops().enqueue(new Callback<List<BusStop>>() {
             @Override
@@ -69,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
                             Integer routecount = yay.getRouteCount();//get the route count
                             Log.d("routecount", routecount+"");//pass through the serviceBusStopList
 
+
+                            //resizing of the views according to the number of routes there are for the bus service
                             if (routecount == 1) {
                                 Log.d("detected", "there is 1 route");//pass through the serviceBusStopList
 
@@ -79,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
                                     {
                                         BusRouteListViewAdapter adapter = new BusRouteListViewAdapter(serviceBusStopList);
                                         busRouteListView1.setAdapter(adapter);
+
+                                        //set the route text to the route direction
+                                        tvRoute1.setText("Towards " + serviceBusStopList.get(serviceBusStopList.size()-1).getName()); //get the direction based on the last bus stop in the list
+
                                         busRouteListView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             @Override
                                             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -100,15 +112,28 @@ public class MainActivity extends AppCompatActivity {
                                 param1.weight = 100;
                                 busRouteListView1.setLayoutParams(param1);
 
+
                                 LinearLayout.LayoutParams param2 = (LinearLayout.LayoutParams)
                                         busRouteListView2.getLayoutParams();
                                 param2.weight = 0;
                                 busRouteListView2.setLayoutParams(param2);
 
-
                                 busRouteListView2.setVisibility(View.GONE);
 
 
+                                LinearLayout.LayoutParams param3 = (LinearLayout.LayoutParams)
+                                        tvRoute1.getLayoutParams();
+                                param1.weight = 100;
+                                tvRoute1.setLayoutParams(param1);
+
+
+                                LinearLayout.LayoutParams param4 = (LinearLayout.LayoutParams)
+                                        tvRoute2.getLayoutParams();
+                                param2.weight = 0;
+                                tvRoute2.setLayoutParams(param2);
+
+                                tvRoute1.setVisibility(View.VISIBLE);
+                                tvRoute2.setVisibility(View.GONE);
                             }
                             else
                             {
@@ -119,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
                                         Log.d("completed", "firstroute");//pass through the serviceBusStopList
                                         BusRouteListViewAdapter adapter1 = new BusRouteListViewAdapter(serviceBusStopList);
                                         busRouteListView1.setAdapter(adapter1);
+
+                                        tvRoute1.setText("Towards " + serviceBusStopList.get(serviceBusStopList.size()-1).getName()); //get the direction based on the last bus stop in the list
 
                                         busRouteListView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             @Override
@@ -144,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
                                         Log.d("completed", "secondroute");//pass through the serviceBusStopList
                                         BusRouteListViewAdapter adapter2 = new BusRouteListViewAdapter(serviceBusStopList);
                                         busRouteListView2.setAdapter(adapter2);
+
+                                        tvRoute2.setText("Towards " + serviceBusStopList.get(serviceBusStopList.size()-1).getName()); //get the direction based on the last bus stop in the list
+
                                         busRouteListView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             @Override
                                             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -161,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
 
                                     }
                                 });
-                                Log.d("detected", "there are 2 routes");//pass through the serviceBusStopList
 
                                 //set weight to 50 for both listviews
                                 LinearLayout.LayoutParams param1 = (LinearLayout.LayoutParams)
@@ -179,6 +208,21 @@ public class MainActivity extends AppCompatActivity {
                                 busRouteListView2.setVisibility(View.VISIBLE);
 
 
+                                //set weight to 50 for both route textview
+                                LinearLayout.LayoutParams param3 = (LinearLayout.LayoutParams)
+                                        tvRoute1.getLayoutParams();
+                                param1.weight = 50;
+
+                                tvRoute1.setLayoutParams(param1);
+
+
+                                LinearLayout.LayoutParams param4 = (LinearLayout.LayoutParams)
+                                        tvRoute2.getLayoutParams();
+                                param2.weight = 50;
+                                tvRoute2.setLayoutParams(param2);
+
+                                tvRoute1.setVisibility(View.VISIBLE);
+                                tvRoute2.setVisibility(View.VISIBLE);
                             }
                         }
                         else
@@ -196,6 +240,23 @@ public class MainActivity extends AppCompatActivity {
                             param2.weight = 0;
                             busRouteListView2.setLayoutParams(param2);
                             busRouteListView2.setVisibility(View.GONE);
+
+
+                            LinearLayout.LayoutParams param3 = (LinearLayout.LayoutParams)
+                                    tvRoute1.getLayoutParams();
+                            param1.weight = 0;
+                            tvRoute1.setLayoutParams(param1);
+
+                            LinearLayout.LayoutParams param4 = (LinearLayout.LayoutParams)
+                                    tvRoute2.getLayoutParams();
+                            param2.weight = 0;
+                            tvRoute2.setLayoutParams(param2);
+
+                            tvRoute1.setVisibility(View.GONE);
+                            tvRoute2.setVisibility(View.GONE);
+
+
+
 
 
                             //create error bus stop object for non existent bus service (for error handling)
