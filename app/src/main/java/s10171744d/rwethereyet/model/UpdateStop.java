@@ -27,7 +27,7 @@ import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProv
 import s10171744d.rwethereyet.R;
 
 /**
- * Created by Lewis on 20/7/2017.
+ * Lewis Tham Jee Peng | Group 9 | S10171744D
  */
 
 public class UpdateStop extends Service implements OnLocationUpdatedListener, OnActivityUpdatedListener {
@@ -71,13 +71,9 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
 
     @Override
     public void onCreate() {
-        super.onCreate(); // if you override onCreate(), make sure to call super().
-        // If a Context object is needed, call getApplicationContext() here.
+        super.onCreate();
         FirstStopIndex = null;
         StopsTilAlert = 1; // default value for number of stops before alerting user to get off
-
-        //busRoute = busRoute;//////!!!!<<<<<<<need to change to grab the busroute     from the activity
-        //LastStopIndex = 69420; ///////!!!!<<<<need to change to grab the selected value from the activity
 
         LastStopIndex = Control.selectedBusIndex;
         busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
@@ -92,7 +88,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopLocation();
+        stopLocation(); //for stopping the location check once service ends
     }
 
     @Nullable
@@ -103,15 +99,13 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
 
     @Override
     public void onLocationUpdated(Location location) {
-        //buildNotification("service launched");
-        Log.d("asdf","service is running");
+        Log.d("asdf","service still running");
 
-        //will need to return a value back to the mainactivity based off here
-
-         //for testing purposes (set the user location to be the first stop of the list)
+        //for testing purposes (set the user location to be the first stop of the list)
+        /*
         location.setLatitude(busRoute.get(0).getLat());
         location.setLongitude(busRoute.get(0).getLon());
-
+        */
 
         UpdateData.stopStatus = 0;
 
@@ -163,7 +157,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     }
 
 
-    private boolean findFirstStop(Location currentlocation,List<BusStop> busRoute)//Boolean findFirstStop(Location currentlocation)
+    private boolean findFirstStop(Location currentlocation,List<BusStop> busRoute)
     {
         double stoplat;
         double stoplon;
@@ -252,7 +246,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         {
             stopsleft = busRoute.size()-1 - stopIndex;
         }
-        else //error cos the previous stop has past by the final stop
+        else //error cos the previous stop has past by the final stop??
         {
             //handle errors?
             stopsleft = -1;

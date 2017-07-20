@@ -22,6 +22,10 @@ import s10171744d.rwethereyet.model.BusStop;
 import s10171744d.rwethereyet.model.UpdateData;
 import s10171744d.rwethereyet.model.UpdateStop;
 
+/**
+ * Lewis Tham Jee Peng | Group 9 | S10171744D
+ */
+
 public class BusJourney extends AppCompatActivity{
 
     //public UpdateStopReceiver stopReceiver; //setup receiver from update stop service
@@ -192,7 +196,7 @@ public class BusJourney extends AppCompatActivity{
     protected void onDestroy() {
         //end the service
         Intent i = new Intent(this, UpdateStop.class);
-        stopService(i);
+        stopService(i); //for proper android garbage collection, end service so it doesnt consume resources
 
         super.onDestroy();
     }

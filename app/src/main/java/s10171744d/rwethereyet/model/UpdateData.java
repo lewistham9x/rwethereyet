@@ -5,7 +5,7 @@ import android.location.Location;
 import java.util.List;
 
 /**
- * Created by Lewis on 18/7/2017.
+ * Lewis Tham Jee Peng | Group 9 | S10171744D
  */
 
 //class allows for all activities to view/modify the same variables - for transferring data from the service to the busjourney activity

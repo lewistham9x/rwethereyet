@@ -17,7 +17,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.goncalves.pugnotification.notification.PugNotification;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,6 +25,10 @@ import s10171744d.rwethereyet.model.BusStop;
 import s10171744d.rwethereyet.model.Control;
 import s10171744d.rwethereyet.network.Network;
 import s10171744d.rwethereyet.util.SingleArgumentCallback;
+
+/**
+ * Lewis Tham Jee Peng | Group 9 | S10171744D
+ */
 
 public class MainActivity extends AppCompatActivity {
     List<BusStop> BusStopList;
@@ -36,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     EditText busServiceNo;
     Button queryButton;
-
-    //List<BusStop> selectedServiceBusStopList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
