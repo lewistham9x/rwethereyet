@@ -16,12 +16,20 @@
         android:layout_weight="10"
         android:orientation="horizontal">
 
+        <TextView
+            android:id="@+id/txtInfo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="30"
+            android:text="Select your destination:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
         <EditText
             android:id="@+id/txtServiceNo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="70"
-            android:hint="Enter Bus Service No."
+            android:layout_weight="40"
+            android:hint="Enter Bus No."
             android:inputType="number"
             android:singleLine="true" />
 
@@ -30,7 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="30"
-            android:text="q"
+            android:text="Search"
             tools:layout_editor_absoluteX="280dp"
             tools:layout_editor_absoluteY="447dp" />
     </LinearLayout>
