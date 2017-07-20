@@ -102,6 +102,9 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
 
         //will need to return a value back to the mainactivity based off here
 
+        location.setLatitude(busRoute.get(0).getLat());
+        location.setLongitude(busRoute.get(0).getLon());
+
         status = 0;
 
         if (FirstStopIndex == null)
@@ -125,6 +128,9 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
         }
         else//lol this is p unoptimised - this is run after first stop has been found, and will keep check+updating everytime location is updated
         {
+            UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
+            UpdateData.prevStop=busRoute.get(PrevStopIndex);
+
             int stopStatus = updatePreviousStop(busRoute,location);// update the previous bus stop
 
             if (stopStatus==1) //check if user has reached next stop
@@ -142,13 +148,9 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
                 //build a notification to alert
                 notifmsg="Yes";
                 buildNotification(notifmsg);
-                stopLocation(); //end the location updates
                 stopSelf();// end the service once destination reached
             }
-
             status = stopStatus;
-            UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
-            UpdateData.prevStop=busRoute.get(PrevStopIndex);
         }
         //maybe can only send and update if status != 0 - but location wont constantly update
         UpdateData.stopStatus=status;
@@ -287,7 +289,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
         PugNotification.with(this)
                 .load()
                 .title(notiftit)
-                .message(notifmsg)
+                .message(msg)
                 //.bigTextStyle(notifBTxt)
                 .smallIcon(R.mipmap.ic_launcher)
                 .largeIcon(R.mipmap.ic_launcher)
