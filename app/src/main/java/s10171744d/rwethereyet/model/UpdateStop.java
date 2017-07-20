@@ -108,8 +108,10 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
 
         //will need to return a value back to the mainactivity based off here
 
+        /* for testing purposes (set the user location to be the first stop of the list)
         location.setLatitude(busRoute.get(0).getLat());
         location.setLongitude(busRoute.get(0).getLon());
+        */
 
         UpdateData.stopStatus = 0;
 
@@ -290,7 +292,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 .title(notiftit)
                 .message(msg)
                 //.bigTextStyle(notifBTxt)
-                .smallIcon(R.mipmap.ic_launcher)
+                .smallIcon(R.drawable.ic_notif)
                 .largeIcon(R.mipmap.ic_launcher)
                 .priority(NotificationCompat.PRIORITY_HIGH) //set peeking??
                 .flags(Notification.DEFAULT_ALL)
