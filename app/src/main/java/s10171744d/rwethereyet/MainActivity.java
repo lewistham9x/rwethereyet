@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     ListView busRouteListView1;
     ListView busRouteListView2;
     EditText busServiceNo;
+    Button queryButton;
 
     //List<BusStop> selectedServiceBusStopList;
 
@@ -39,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button queryButton = (Button) findViewById(R.id.queryButton);
-        final EditText busServiceNo = (EditText) findViewById(R.id.txtServiceNo);
+        queryButton = (Button) findViewById(R.id.queryButton);
+        busServiceNo = (EditText) findViewById(R.id.txtServiceNo);
         busRouteListView1 = (ListView) findViewById(R.id.busRouteListView1);
         busRouteListView2 = (ListView) findViewById(R.id.busRouteListView2);
 

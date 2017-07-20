@@ -137,7 +137,6 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         else//this is run after first stop has been found, and will keep check+updating everytime location is updated
         {
             UpdateData.prevStop=busRoute.get(PrevStopIndex);
-            UpdateData.curLoc=location;
             UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
             UpdateData.stopStatus = updatePreviousStop(busRoute,location);// update the previous bus stop
 
@@ -158,6 +157,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 stopSelf();// end the service once destination reached
             }
         }
+        UpdateData.curLoc=location;
         sendBroadcast(new Intent("LocationUpdated"));
 
     }
