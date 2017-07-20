@@ -26,6 +26,8 @@
             android:name=".BusJourney"
             android:screenOrientation="portrait">
         </activity>
+        <service android:name=".model.UpdateStop"
+            android:exported="false"/>
     </application>
 
 </manifest>
