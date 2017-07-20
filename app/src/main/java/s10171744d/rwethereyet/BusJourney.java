@@ -130,14 +130,23 @@ public class BusJourney extends AppCompatActivity{
                     ivStop.setVisibility(View.VISIBLE);
 
                 }
-                if (status == 4)
+                else if (status == 4)
                 {
                     BusStop prevStop = UpdateData.prevStop;
 
                     String stopinfo = String.format("Last Bus Stop\nName: %s\nCode: %s",prevStop.getName(),prevStop.getCode());
                     tv1.setText(stopinfo);
 
-                    tv2.setText("You just started your journey");
+                    tv2.setText("You just started your journey.");
+
+                    ivStop.setVisibility(View.GONE);
+                }
+                else if (status == -1)
+                {
+                    String stopinfo = String.format("Searching for bus stop...");
+                    tv1.setText(stopinfo);
+
+                    tv2.setText("Your journey will start when you are near a bus stop within your chosen route.");
 
                     ivStop.setVisibility(View.GONE);
                 }

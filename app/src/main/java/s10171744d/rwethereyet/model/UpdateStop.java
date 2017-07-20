@@ -50,6 +50,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
         2 = user is reaching destination
         3 = user has reached destination
         4 = the first stop has been found
+        -1 = first stop hasnt been found
     */
 
 
@@ -108,13 +109,13 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
                 PrevStopIndex = 0;
                 status = 4;
             }
-            /*
+
             else
             {
-                //bus stop isnt found yet
-                status = 0;
+                //journey hasnt started
+                status = -1;
             }
-            */
+
 
         }
         else//lol this is p unoptimised - this is run after first stop has been found, and will keep check+updating everytime location is updated
