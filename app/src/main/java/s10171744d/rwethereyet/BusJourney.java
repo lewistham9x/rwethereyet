@@ -74,16 +74,33 @@ public class BusJourney extends AppCompatActivity{
             //start the service if location permissions granted
             //setupServiceReceiver();
 
-            if (dataUpdateReceiver == null) dataUpdateReceiver = new DataUpdateReceiver();
-            IntentFilter intentFilter = new IntentFilter("LocationUpdated");
-            registerReceiver(dataUpdateReceiver, intentFilter);
-
-
             Intent i = new Intent(this, UpdateStop.class);
             startService(i);
         }
     }
-    // callback for when data is received from service (new data from service)
+
+
+
+
+    //register and unregister listener for updates if the app is in foreground/background
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (dataUpdateReceiver == null) dataUpdateReceiver = new DataUpdateReceiver();
+        IntentFilter intentFilter = new IntentFilter("LocationUpdated");
+        registerReceiver(dataUpdateReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver);
+    }
+
+
+
+
+    // callback for when data is received from service using datayodatereceiver listener (theres updated data from the service)
 
     private class DataUpdateReceiver extends BroadcastReceiver { //receiver to check if theres any changes in the thing
         @Override
@@ -155,11 +172,6 @@ public class BusJourney extends AppCompatActivity{
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver);
-    }
 /*
     public void setupServiceReceiver() {
         stopReceiver = new UpdateStopReceiver(new Handler());
