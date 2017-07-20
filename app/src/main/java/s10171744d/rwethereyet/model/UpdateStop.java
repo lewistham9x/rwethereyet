@@ -3,10 +3,15 @@ package s10171744d.rwethereyet.model;
 import android.app.Activity;
 import android.app.IntentService;
 import android.app.Notification;
+import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.ResultReceiver;
+import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.location.DetectedActivity;
@@ -25,7 +30,7 @@ import s10171744d.rwethereyet.R;
  * Created by Lewis on 20/7/2017.
  */
 
-public class UpdateStop extends IntentService implements OnLocationUpdatedListener, OnActivityUpdatedListener {
+public class UpdateStop extends Service implements OnLocationUpdatedListener, OnActivityUpdatedListener {
 
     private LocationGooglePlayServicesProvider provider;
 
@@ -44,7 +49,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
     Integer status;
 
 
-    Integer radius = 50;//radius (in m) for detecting bus stop
+    Integer radius = 50;//radius (in m) for detecting bus stop (change for different sensitivity)
 
     /*
         status returns an integer based on the status of the busstop update, used for returning to busjourney
@@ -60,12 +65,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
     // Must create a default constructor
     public UpdateStop() {
         // Used to name the worker thread, important only for debugging.
-        super("updatestop-service");
-    }
-
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        // This describes what will happen when service is triggered
+        //super("updatestop-service");
     }
 
 
@@ -92,20 +92,26 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         stopLocation();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     @Override
     public void onLocationUpdated(Location location) {
         //buildNotification("service launched");
+        Log.d("asdf","service is running");
 
         //will need to return a value back to the mainactivity based off here
 
         location.setLatitude(busRoute.get(0).getLat());
         location.setLongitude(busRoute.get(0).getLon());
 
-        status = 0;
+        UpdateData.stopStatus = 0;
 
         if (FirstStopIndex == null)
         {
@@ -113,7 +119,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
             {
                 busRoute = busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
                 PrevStopIndex = 0;
-                status = 4;
+                UpdateData.stopStatus = 4;
                 UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
                 UpdateData.prevStop=busRoute.get(PrevStopIndex);
             }
@@ -121,16 +127,16 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
             else
             {
                 //journey hasnt started
-                status = -1;
+                UpdateData.stopStatus = -1;
             }
 
 
         }
-        else//lol this is p unoptimised - this is run after first stop has been found, and will keep check+updating everytime location is updated
+        else//this is run after first stop has been found, and will keep check+updating everytime location is updated
         {
-            UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
             UpdateData.prevStop=busRoute.get(PrevStopIndex);
             UpdateData.curLoc=location;
+            UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
             UpdateData.stopStatus = updatePreviousStop(busRoute,location);// update the previous bus stop
 
             if (UpdateData.stopStatus==1) //check if user has reached next stop
@@ -188,7 +194,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
             {
                 return 3;
             }
-            else if (countStopsAway(busRoute,PrevStopIndex+1)<=StopsTilAlert) //if the stop is the within the range of alerting
+            else if (countStopsAway(busRoute,PrevStopIndex)<=StopsTilAlert) //if the stop is the within the range of alerting
             {
                 PrevStopIndex++;
                 return 2;
@@ -268,9 +274,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
     }
 
     private void stopLocation() {
-        SmartLocation.with(this).location().stop();
-        SmartLocation.with(this).activity().stop();
-
+        SmartLocation.with(getApplicationContext()).location().stop();
     }
 
     @Override
@@ -288,6 +292,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
                 //.bigTextStyle(notifBTxt)
                 .smallIcon(R.mipmap.ic_launcher)
                 .largeIcon(R.mipmap.ic_launcher)
+                .priority(NotificationCompat.PRIORITY_HIGH) //set peeking??
                 .flags(Notification.DEFAULT_ALL)
                 .simple()
                 .build();

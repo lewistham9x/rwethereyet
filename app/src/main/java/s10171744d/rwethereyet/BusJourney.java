@@ -172,24 +172,6 @@ public class BusJourney extends AppCompatActivity{
         }
     }
 
-/*
-    public void setupServiceReceiver() {
-        stopReceiver = new UpdateStopReceiver(new Handler());
-        // This is where we specify what happens when data is received from the service
-        stopReceiver.setReceiver(new UpdateStopReceiver.Receiver() {
-            @Override
-            public void onReceiveResult(int resultCode, Bundle resultData) { //triggered when data is sent from service
-                if (resultCode == RESULT_OK) {
-                    //String resultValue = resultData.getString("resultValue");
-                    Integer status = resultData.getInt("UpdateStatus");
-                    tv1.setText(status+"");
-                }
-            }
-        });
-    }
-
-    */
-
     private void showLocation(Location location) {
         if (location != null) {
             final String text = String.format("Latitude %.6f, Longitude %.6f",
@@ -229,6 +211,5 @@ public class BusJourney extends AppCompatActivity{
         stopService(i);
 
         super.onDestroy();
-        Log.d("detected", "onDestroyevent");
     }
 }

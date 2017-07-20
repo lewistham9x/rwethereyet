@@ -8,6 +8,9 @@ import java.util.List;
  * Created by Lewis on 18/7/2017.
  */
 
+//class allows for all activities to view/modify the same variables - for transferring data from the service to the busjourney activity
+//could not use sharedpref to store objects like busstop and location
+
 public class UpdateData {
     public static int stopStatus;
     public static BusStop prevStop;
