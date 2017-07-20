@@ -95,6 +95,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
 
     @Override
     public void onLocationUpdated(Location location) {
+        buildNotification("service launched");
 
         //will need to return a value back to the mainactivity based off here
 
@@ -146,7 +147,8 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
         ResultReceiver rec = intent.getParcelableExtra("receiver");
         // To send a message to the Activity, create a pass a Bundle
         Bundle bundle = new Bundle();
-        bundle.putInt("UpdateStatus",status);
+        //bundle.putInt("UpdateStatus",status);
+        bundle.putInt("UpdateStatus",2);
         // Here we call send passing a resultCode and the bundle of extras
         rec.send(Activity.RESULT_OK,bundle);
 
@@ -259,10 +261,10 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
 
         SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
 
-
-        smartLocation.with(this).location(provider).start(this);
-        smartLocation.location(provider).config(LocationParams.NAVIGATION).start(this);
-        smartLocation.activity().start(this);
+        smartLocation.with(getApplicationContext())
+                .location(provider)
+                .config(LocationParams.NAVIGATION)
+                .start(this);
     }
 
     private void stopLocation() {
