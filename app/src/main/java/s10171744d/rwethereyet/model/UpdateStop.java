@@ -43,6 +43,9 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
 
     Integer status;
 
+
+    Integer radius = 50;//radius (in m) for detecting bus stop
+
     /*
         status returns an integer based on the status of the busstop update, used for returning to busjourney
         0 = no difference
@@ -169,7 +172,7 @@ public class UpdateStop extends IntentService implements OnLocationUpdatedListen
         {
             stoplat = bs.getLat();
             stoplon = bs.getLon();
-            if (withinRadius(stoplat,stoplon,curLat,curLon,100))//50 is minimum for proper tracking
+            if (withinRadius(stoplat,stoplon,curLat,curLon,radius))//50 is minimum for proper tracking
             {
                 succ = true;
                 FirstStopIndex = stopIndex;

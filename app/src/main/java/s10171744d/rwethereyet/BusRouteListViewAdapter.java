@@ -60,8 +60,8 @@ public class BusRouteListViewAdapter extends BaseAdapter{
         }
         else
         {
-            code.setText("Code: " + bs.getCode());
-            name.setText("Name: " + bs.getName());
+            code.setText("Stop Code: " + bs.getCode());
+            name.setText("" + bs.getName());
             lat.setText("Latitude: " + bs.getLat());
             lon.setText("Longitude: " + bs.getLon());
         }

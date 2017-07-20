@@ -4,6 +4,13 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name: "
+        android:textSize="20sp"
+        android:textStyle="bold" />
+    <TextView
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/code"
@@ -11,16 +18,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name: "
-        android:id="@+id/name"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Latitude: "
-        android:id="@+id/lat"/>
+        android:id="@+id/lat"
+        android:visibility="gone"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Longitude: "
-        android:id="@+id/lon"/>
+        android:id="@+id/lon"
+        android:visibility="gone"/>
 </LinearLayout>
