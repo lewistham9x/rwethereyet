@@ -21,9 +21,20 @@
         android:id="@+id/ivStop"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="45"
+        android:layout_weight="50"
         android:visibility="invisible"
         app:srcCompat="@drawable/stop" />
+
+
+    <TextView
+        android:id="@+id/tvPrevStop"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:text="loading.."
+        android:textAlignment="textEnd"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvStopsLeft"
@@ -34,15 +45,4 @@
         android:textAlignment="textEnd"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textStyle="italic" />
-
-    <TextView
-        android:id="@+id/tvPrevStop"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="15"
-        android:text="loading.."
-        android:textAlignment="textEnd"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textStyle="bold" />
-
 </LinearLayout>

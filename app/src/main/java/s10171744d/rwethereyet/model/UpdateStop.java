@@ -115,9 +115,8 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 PrevStopIndex = 0;
                 UpdateData.prevStop=busRoute.get(PrevStopIndex);
                 UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
-                stopStatus = 4;
+                stopStatus = 2;
             }
-
             else
             {
                 //journey hasnt started
@@ -126,25 +125,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         }
         else//this is run after first stop has been found, and will keep check+updating everytime location is updated
         {
-            UpdateData.prevStop=busRoute.get(PrevStopIndex);
-            UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
-
-            if (UpdateData.stopsLeft==0) //if the stop is the destination
-            {
-                if (isAtStop(busRoute,PrevStopIndex,location))
-                {
-                    stopStatus = 3;
-                }
-            }
-            else if (UpdateData.stopsLeft<=StopsTilAlert) //if the stop is the within the range of alerting
-            {
-                if (isAtStop(busRoute,PrevStopIndex+1,location))
-                {
-                    stopStatus = 2;
-                    PrevStopIndex++;
-                }
-            }
-            else//if next stop found
+            if (UpdateData.stopsLeft!=0)
             {
                 if (isAtStop(busRoute,PrevStopIndex+1,location))
                 {
@@ -154,9 +135,11 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             }
         }
 
-        if (stopStatus!=0)
+        if (stopStatus!=0) //if there has been a change in bus stop
         {
             UpdateData.stopStatus = stopStatus;
+            UpdateData.prevStop=busRoute.get(PrevStopIndex);
+            UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
         }
 
         UpdateData.curLoc=location;

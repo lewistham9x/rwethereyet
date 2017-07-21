@@ -151,49 +151,37 @@ public class BusJourney extends AppCompatActivity{
 
             String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
-            tvReachYet.setText("no");
             tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
             tvPrevStop.setText(stopinfo);
 
-            ivStop.setVisibility(View.INVISIBLE);
+            if (UpdateData.stopsLeft==0)
+            {
+                tvReachYet.setText("yes");
+                ivStop.setVisibility(View.VISIBLE);
+            }
+            else if (UpdateData.stopsLeft<=1)
+            {
+                tvReachYet.setText("soon");
+                ivStop.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                tvReachYet.setText("no");
+                ivStop.setVisibility(View.INVISIBLE);
+            }
         }
+
         else if (status == 2)
         {
             BusStop prevStop = UpdateData.prevStop;
 
             String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
-            tvReachYet.setText("soon");
+            tvReachYet.setText("no");
             tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
             tvPrevStop.setText(stopinfo);
 
-            ivStop.setVisibility(View.VISIBLE);
-
-        }
-        else if (status == 3)
-        {
-            BusStop prevStop = UpdateData.prevStop;
-
-            String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
-
-            tvReachYet.setText("yes");
-            tvStopsLeft.setText("");
-            tvPrevStop.setText(stopinfo);
-
-            ivStop.setVisibility(View.VISIBLE);
-
-        }
-        else if (status == 4)
-        {
-            BusStop prevStop = UpdateData.prevStop;
-
-            String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
-
-            tvReachYet.setText("!!!");
-            tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
-            tvPrevStop.setText(stopinfo);
-
-            ivStop.setVisibility(View.GONE);
+            ivStop.setVisibility(View.INVISIBLE);
         }
 
         else if (status == -1)
