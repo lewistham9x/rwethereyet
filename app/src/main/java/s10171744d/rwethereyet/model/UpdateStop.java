@@ -125,7 +125,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         }
         else//this is run after first stop has been found, and will keep check+updating everytime location is updated
         {
-            if (UpdateData.stopsLeft!=0)
+            if (UpdateData.stopsLeft>0)
             {
                 if (isAtStop(busRoute,PrevStopIndex+1,location))
                 {
@@ -140,6 +140,20 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             UpdateData.stopStatus = stopStatus;
             UpdateData.prevStop=busRoute.get(PrevStopIndex);
             UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
+
+            if (UpdateData.stopsLeft==0)
+            {
+                //build a notification to alert
+                notifmsg="You are reaching in <" + StopsTilAlert +" stops";
+                buildNotification(notifmsg);
+            }
+            else if (UpdateData.stopsLeft<=1)
+            {
+                //build a notification to alert
+                notifmsg="Yes";
+                buildNotification(notifmsg);
+                stopSelf();// end the service once destination reached
+            }
         }
 
         UpdateData.curLoc=location;
@@ -180,7 +194,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         double curLat = currentlocation.getLatitude();
         double curLon = currentlocation.getLongitude();
 
-        if (withinRadius(stoplat,stoplon,curLat,curLon,50)) //10 is too small radius for checking nearby bus stop, 50 is perfect
+        if (withinRadius(stoplat,stoplon,curLat,curLon,)) //last param is the radius sensitivity of bus stop locating
         {
             return true;
         }
