@@ -155,7 +155,7 @@ public class BusJourney extends AppCompatActivity{
             tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
             tvPrevStop.setText(stopinfo);
 
-            ivStop.setVisibility(View.GONE);
+            ivStop.setVisibility(View.INVISIBLE);
         }
         else if (status == 2)
         {

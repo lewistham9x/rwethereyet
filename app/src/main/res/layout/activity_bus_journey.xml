@@ -17,6 +17,14 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display4" />
 
+    <ImageView
+        android:id="@+id/ivStop"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="45"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/stop" />
+
     <TextView
         android:id="@+id/tvStopsLeft"
         android:layout_width="match_parent"
@@ -37,11 +45,4 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/ivStop"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="45"
-        android:visibility="gone"
-        app:srcCompat="@drawable/stop" />
 </LinearLayout>
