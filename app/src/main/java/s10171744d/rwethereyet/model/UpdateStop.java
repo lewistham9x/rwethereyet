@@ -98,7 +98,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
 
     @Override
     public void onLocationUpdated(Location location) {
-        Log.d("asdf","service still running");
+        Log.d("tit","Location service is running");
 
         //for testing purposes (set the user location to be the first stop of the list)
         /*

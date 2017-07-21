@@ -1,6 +1,7 @@
 package s10171744d.rwethereyet;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +9,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -53,19 +58,17 @@ public class BusJourney extends AppCompatActivity{
         tvPrevStop = (TextView)findViewById(R.id.tvPrevStop);
         ivStop = (ImageView) findViewById(R.id.ivStop);
 
-        // check location permission
+        // check location permission before running service
         checkPermission();
     }
 
     private void checkPermission() //check if location permission granted, and start service if it is, if not, request for perm.
     {
         Boolean succ;
-        succ = (ContextCompat.checkSelfPermission(BusJourney.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED);
+        succ = (ContextCompat.checkSelfPermission(BusJourney.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
         if (!succ)
         {
-            ActivityCompat.requestPermissions(BusJourney.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION
-            }, LOCATION_PERMISSION_ID);
-            checkPermission(); //will keep requesting for permissions until permission is granted
+            ActivityCompat.requestPermissions(BusJourney.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
         }
         else
         {
@@ -73,6 +76,38 @@ public class BusJourney extends AppCompatActivity{
             Intent i = new Intent(this, UpdateStop.class);
             startService(i);
         }
+    }
+
+    //@android.support.annotation.RequiresApi(api = Build.VERSION_CODES.M)
+    @Override //check when user has selected whether or not to allow permissions
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        /* commented out as it is hard to do
+        //if user selects don't ask again..
+        if (!shouldShowRequestPermissionRationale(permissions[0]))
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Need location permissions for proper functionality");
+            builder.setMessage("Are we there yet requires the location permission in order to detect what bus stop you are at. Please allow permissions from settings in order for the app to work.");
+            builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                }
+            });
+            builder.setNegativeButton("exit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish(); //will go to ondestroy, then from there stop the service
+                }
+            });
+            builder.show();
+        }
+
+        */
+        checkPermission(); //check permission again once option from request has been selected
     }
 
 
@@ -101,7 +136,6 @@ public class BusJourney extends AppCompatActivity{
         @Override
         public void onReceive(Context context, Intent intent) {  //triggered when data is sent from service
             if (intent.getAction().equals("LocationUpdated")) {
-                Log.d("status",UpdateData.stopStatus+"");
                 updateView();
             }
         }
