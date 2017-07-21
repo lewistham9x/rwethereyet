@@ -1,18 +1,13 @@
 package s10171744d.rwethereyet.model;
 
-import android.app.Activity;
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.View;
 
 import com.google.android.gms.location.DetectedActivity;
 
@@ -33,8 +28,6 @@ import s10171744d.rwethereyet.R;
 public class UpdateStop extends Service implements OnLocationUpdatedListener, OnActivityUpdatedListener {
 
     private LocationGooglePlayServicesProvider provider;
-
-    Integer StopsTilAlert;
 
     Integer FirstStopIndex; //first stop found by updater to trim list
     Integer PrevStopIndex;
@@ -72,7 +65,6 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     public void onCreate() {
         super.onCreate();
         FirstStopIndex = null;
-        StopsTilAlert = 1; // default value for number of stops before alerting user to get off
 
         LastStopIndex = Control.selectedBusIndex;
         busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
@@ -144,10 +136,10 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             if (UpdateData.stopsLeft==0)
             {
                 //build a notification to alert
-                notifmsg="You are reaching in <" + StopsTilAlert +" stops";
+                notifmsg="You are reaching in <" + Settings.getStopsToAlert() +" stops";
                 buildNotification(notifmsg);
             }
-            else if (UpdateData.stopsLeft<=1)
+            else if (UpdateData.stopsLeft<= Settings.getStopsToAlert())
             {
                 //build a notification to alert
                 notifmsg="Yes";
@@ -194,7 +186,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         double curLat = currentlocation.getLatitude();
         double curLon = currentlocation.getLongitude();
 
-        if (withinRadius(stoplat,stoplon,curLat,curLon,)) //last param is the radius sensitivity of bus stop locating
+        if (withinRadius(stoplat,stoplon,curLat,curLon, Settings.getSensitivity())) //last param is the radius sensitivity of bus stop locating
         {
             return true;
         }

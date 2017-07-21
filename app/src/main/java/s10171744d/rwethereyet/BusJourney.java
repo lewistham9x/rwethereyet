@@ -1,7 +1,6 @@
 package s10171744d.rwethereyet;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,9 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +21,7 @@ import android.widget.TextView;
 
 
 import s10171744d.rwethereyet.model.BusStop;
+import s10171744d.rwethereyet.model.Settings;
 import s10171744d.rwethereyet.model.UpdateData;
 import s10171744d.rwethereyet.model.UpdateStop;
 
@@ -159,7 +156,7 @@ public class BusJourney extends AppCompatActivity{
                 tvReachYet.setText("yes");
                 ivStop.setVisibility(View.VISIBLE);
             }
-            else if (UpdateData.stopsLeft<=1)
+            else if (UpdateData.stopsLeft<= Settings.getStopsToAlert())
             {
                 tvReachYet.setText("soon");
                 ivStop.setVisibility(View.VISIBLE);
