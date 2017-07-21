@@ -1,11 +1,12 @@
 package s10171744d.rwethereyet;
 
-import android.app.Notification;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,6 +70,16 @@ public class MainActivity extends AppCompatActivity {
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //close virtual keyboard
+
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+
+
+                //grab data from database
                 Network.getBusRouterService().listRepos(busServiceNo.getText()+"").enqueue(new Callback<BusRouterServiceResponse>() {
                     @Override
                     public void onResponse(Call<BusRouterServiceResponse> call, Response<BusRouterServiceResponse> response) {
@@ -92,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                                         busRouteListView1.setAdapter(adapter);
 
                                         //set the route text to the route direction
-                                        tvRoute1.setText("Towards " + serviceBusStopList.get(serviceBusStopList.size()-1).getName()); //get the direction based on the last bus stop in the list
+                                        tvRoute1.setText("To " + serviceBusStopList.get(serviceBusStopList.size()-1).getName()); //get the direction based on the last bus stop in the list
 
                                         busRouteListView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             @Override
@@ -148,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                         BusRouteListViewAdapter adapter1 = new BusRouteListViewAdapter(serviceBusStopList);
                                         busRouteListView1.setAdapter(adapter1);
 
-                                        tvRoute1.setText("Towards " + serviceBusStopList.get(serviceBusStopList.size()-1).getName()); //get the direction based on the last bus stop in the list
+                                        tvRoute1.setText("To " + serviceBusStopList.get(serviceBusStopList.size()-1).getName()); //get the direction based on the last bus stop in the list
 
                                         busRouteListView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             @Override
@@ -175,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                                         BusRouteListViewAdapter adapter2 = new BusRouteListViewAdapter(serviceBusStopList);
                                         busRouteListView2.setAdapter(adapter2);
 
-                                        tvRoute2.setText("Towards " + serviceBusStopList.get(serviceBusStopList.size()-1).getName()); //get the direction based on the last bus stop in the list
+                                        tvRoute2.setText("To " + serviceBusStopList.get(serviceBusStopList.size()-1).getName()); //get the direction based on the last bus stop in the list
 
                                         busRouteListView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             @Override

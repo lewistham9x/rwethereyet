@@ -47,7 +47,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"
+        android:layout_weight="8"
         android:orientation="horizontal">
 
         <TextView
@@ -55,9 +55,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="100"
+            android:maxLines="1"
             android:text="Route 1"
             android:textAlignment="center"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="25sp"
             android:textStyle="bold"
             android:visibility="gone"></TextView>
 
@@ -68,15 +70,17 @@
             android:layout_weight="0"
             android:text="Route 2"
             android:textAlignment="center"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:maxLines="1"
             android:visibility="gone"></TextView>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="85"
+        android:layout_weight="82"
         android:orientation="horizontal">
 
         <ListView

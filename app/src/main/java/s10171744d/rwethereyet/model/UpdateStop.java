@@ -92,10 +92,10 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         Log.d("tit","Location service is running");
 
         //for testing purposes (set the user location to be the first stop of the list)
-
+        /*
         location.setLatitude(busRoute.get(0).getLat());
         location.setLongitude(busRoute.get(0).getLon());
-
+        */
 
         stopStatus = 0;
 
@@ -142,7 +142,14 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             else if (UpdateData.stopsLeft<= Settings.getStopsToAlert())
             {
                 //build a notification to alert
-                notifmsg="You are reaching in <" + Settings.getStopsToAlert() +" stops";
+                if (Settings.getStopsToAlert()==1)
+                {
+                    notifmsg="You are reaching in <" + Settings.getStopsToAlert() +" stop";
+                }
+                else
+                {
+                    notifmsg="You are reaching in <" + Settings.getStopsToAlert() +" stops";
+                }
                 buildNotification(notifmsg);
                 stopSelf();// end the service once destination reached
             }

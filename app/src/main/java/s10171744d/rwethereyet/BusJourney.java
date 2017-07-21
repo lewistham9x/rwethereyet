@@ -148,7 +148,15 @@ public class BusJourney extends AppCompatActivity{
 
             String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
-            String stopsleft = UpdateData.stopsLeft +" stops to " +UpdateData.destStop.getName();
+            String stopsleft;
+            if (UpdateData.stopsLeft==1)
+            {
+                stopsleft = UpdateData.stopsLeft +" stop to " +UpdateData.destStop.getName();
+            }
+            else
+            {
+                stopsleft = UpdateData.stopsLeft +" stops to " +UpdateData.destStop.getName();
+            }
 
             if (UpdateData.stopsLeft==0)
             {
