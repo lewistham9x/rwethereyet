@@ -115,7 +115,6 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 //journey hasnt started
                 stopStatus = -1;
             }
-            UpdateData.stopStatus = stopStatus;
         }
         else//this is run after first stop has been found, and will keep check+updating everytime location is updated
         {
@@ -129,6 +128,10 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             }
             UpdateData.prevStop=busRoute.get(PrevStopIndex);
             UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
+        }
+
+        if (stopStatus!=0)
+        {
             UpdateData.stopStatus = stopStatus;
         }
 
@@ -154,6 +157,14 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 buildNotification(notifmsg);
                 stopSelf();// end the service once destination reached
             }
+
+
+            //temporary test for debugging
+            else
+            {
+                buildNotification("reached a stop");
+            }
+
         }
 
         UpdateData.curLoc=location;
