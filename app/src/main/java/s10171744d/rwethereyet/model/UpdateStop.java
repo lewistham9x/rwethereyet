@@ -39,15 +39,6 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     String notiftit = "Are we there yet?";
     String notifmsg = "No";
 
-    Integer stopStatus;
-    /*
-        returns an integer based on the status of the busstop update, used for returning to busjourney
-        - = no updates;
-        1 = a stop has been reached
-        -1 = first stop hasnt been found
-    */
-
-
     Integer radius = 50;//radius (in m) for detecting bus stop (change for different sensitivity)
 
 
@@ -93,11 +84,17 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
 
         //for testing purposes (set the user location to be the first stop of the list)
         /*
-        location.setLatitude(busRoute.get(0).getLat());
-        location.setLongitude(busRoute.get(0).getLon());
+            location.setLatitude(busRoute.get(0).getLat());
+            location.setLongitude(busRoute.get(0).getLon());
         */
 
-        stopStatus = 0;
+        Integer stopStatus = 0;
+        /*
+            returns an integer based on the status of the busstop update, used for returning to busjourney
+            0 = no updates;
+            1 = a stop has been reached
+            -1 = first stop hasnt been found
+        */
 
         if (FirstStopIndex == null)
         {
@@ -108,6 +105,10 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 UpdateData.prevStop=busRoute.get(PrevStopIndex);
                 UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
                 stopStatus = 1;
+
+                UpdateData.prevStop=busRoute.get(PrevStopIndex);
+                UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
+
             }
             else
             {
@@ -125,13 +126,12 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                     PrevStopIndex++;
                 }
             }
+            UpdateData.prevStop=busRoute.get(PrevStopIndex);
+            UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
         }
-
         UpdateData.stopStatus = stopStatus;
-        UpdateData.prevStop=busRoute.get(PrevStopIndex);
-        UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
 
-        if (stopStatus!=0) //if there has been a change in bus stop
+        if (stopStatus>0) //if there has been a change in bus stop/first stop alr found
         {
             if (UpdateData.stopsLeft==0)
             {

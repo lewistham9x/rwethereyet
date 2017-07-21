@@ -184,10 +184,10 @@ public class BusJourney extends AppCompatActivity{
         else if (status == -1)
         {
             tvReachYet.setText("...");
-            tvStopsLeft.setText("searching for bus stop");
-            tvPrevStop.setText("your journey will start once you are near a bus stop within your selected route");
+            tvStopsLeft.setText("searching for bus stop..");
+            tvPrevStop.setText("tracking starts when near bus stop");
 
-            ivStop.setVisibility(View.GONE);
+            ivStop.setVisibility(View.INVISIBLE);
         }
     }
 
