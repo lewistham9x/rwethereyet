@@ -49,7 +49,6 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     Integer status;
     /*
         status returns an integer based on the status of the busstop update, used for returning to busjourney
-        0 = no difference
         1 = a stop has been reached
         2 = user is reaching destination
         3 = user has reached destination
@@ -101,10 +100,10 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         Log.d("tit","Location service is running");
 
         //for testing purposes (set the user location to be the first stop of the list)
-        /*
+
         location.setLatitude(busRoute.get(0).getLat());
         location.setLongitude(busRoute.get(0).getLon());
-        */
+
 
         Integer stopStatus = 0;
 
@@ -114,9 +113,9 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             {
                 busRoute = busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
                 PrevStopIndex = 0;
-                stopStatus = 4;
-                UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
                 UpdateData.prevStop=busRoute.get(PrevStopIndex);
+                UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
+                stopStatus = 4;
             }
 
             else
@@ -129,33 +128,40 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         {
             UpdateData.prevStop=busRoute.get(PrevStopIndex);
             UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
-            stopStatus = updatePreviousStop(busRoute,location);// update the previous bus stop
 
-            if (stopStatus==1) //check if user has reached next stop
+            if (UpdateData.stopsLeft==0) //if the stop is the destination
             {
+                if (isAtStop(busRoute,PrevStopIndex,location))
+                {
+                    stopStatus = 3;
+                }
             }
-            else if (stopStatus==2) //user is reaching destination
+            else if (UpdateData.stopsLeft<=StopsTilAlert) //if the stop is the within the range of alerting
             {
-                //build a notification to alert
-                notifmsg="You're reaching in <" + StopsTilAlert +" stops";
-                buildNotification(notifmsg);
+                if (isAtStop(busRoute,PrevStopIndex+1,location))
+                {
+                    stopStatus = 2;
+                    PrevStopIndex++;
+                }
             }
-            else if (stopStatus==3)//check is user has reached destination
+            else//if next stop found
             {
-                //build a notification to alert
-                notifmsg="Yes";
-                buildNotification(notifmsg);
-                stopSelf();// end the service once destination reached
+                if (isAtStop(busRoute,PrevStopIndex+1,location))
+                {
+                    stopStatus = 1;
+                    PrevStopIndex++;
+                }
             }
         }
+
+        if (stopStatus!=0)
+        {
+            UpdateData.stopStatus = stopStatus;
+        }
+
         UpdateData.curLoc=location;
 
-        if (stopStatus != 0)
-        {
-            UpdateData.stopStatus=stopStatus;
-        }
         sendBroadcast(new Intent("LocationUpdated"));
-
     }
 
 
@@ -183,31 +189,6 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         return succ; //if successful, will stop searching for first stop
     }
 
-    private int updatePreviousStop(List<BusStop> busRoute, Location location) //returns a int value if previous stop is updated/reached destination
-    //0 = no change in bus stop, 1 = change in bus stop, 2= reaching destination, 3= destination has been reached
-    {
-        if (isAtStop(busRoute,PrevStopIndex,location)) //if user gps is near the next bus stop <---error, when reach the end of the list, cant ++ prevstop anymore
-        {
-            if (countStopsAway(busRoute,PrevStopIndex)==0) //if the stop is the destination
-            {
-                return 3;
-            }
-            else if (countStopsAway(busRoute,PrevStopIndex)<=StopsTilAlert) //if the stop is the within the range of alerting
-            {
-                PrevStopIndex++;
-                return 2;
-            }
-            else//if next stop found
-            {
-                PrevStopIndex++;
-                return 1;
-            }
-        }
-        else
-        {
-            return 0; //do nothing if theres no change in previous bus stop
-        }
-    }
 
     private boolean isAtStop(List<BusStop> busRoute, Integer stop, Location currentlocation) //if user is at bus stop location
     {
