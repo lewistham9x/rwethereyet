@@ -148,37 +148,29 @@ public class BusJourney extends AppCompatActivity{
 
             String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
 
-            tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
-            tvPrevStop.setText(stopinfo);
+            String stopsleft = UpdateData.stopsLeft +" stops to " +UpdateData.destStop.getName();
 
             if (UpdateData.stopsLeft==0)
             {
                 tvReachYet.setText("yes");
+                stopsleft="you have reached " +UpdateData.destStop.getName();
                 ivStop.setVisibility(View.VISIBLE);
+                tvPrevStop.setVisibility(View.INVISIBLE);
             }
             else if (UpdateData.stopsLeft<= Settings.getStopsToAlert())
             {
                 tvReachYet.setText("soon");
                 ivStop.setVisibility(View.VISIBLE);
+                tvPrevStop.setVisibility(View.VISIBLE);
             }
             else
             {
                 tvReachYet.setText("no");
                 ivStop.setVisibility(View.INVISIBLE);
+                tvPrevStop.setVisibility(View.VISIBLE);
             }
-        }
-
-        else if (status == 2)
-        {
-            BusStop prevStop = UpdateData.prevStop;
-
-            String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
-
-            tvReachYet.setText("no");
-            tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
             tvPrevStop.setText(stopinfo);
-
-            ivStop.setVisibility(View.INVISIBLE);
+            tvStopsLeft.setText(stopsleft);
         }
 
         else if (status == -1)

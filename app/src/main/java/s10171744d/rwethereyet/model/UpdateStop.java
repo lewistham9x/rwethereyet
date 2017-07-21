@@ -39,13 +39,11 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     String notiftit = "Are we there yet?";
     String notifmsg = "No";
 
-    Integer status;
+    Integer stopStatus;
     /*
-        status returns an integer based on the status of the busstop update, used for returning to busjourney
+        returns an integer based on the status of the busstop update, used for returning to busjourney
+        - = no updates;
         1 = a stop has been reached
-        2 = user is reaching destination
-        3 = user has reached destination
-        4 = the first stop has been found
         -1 = first stop hasnt been found
     */
 
@@ -64,6 +62,8 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Log.d("Event","OnCreate");
         FirstStopIndex = null;
 
         LastStopIndex = Control.selectedBusIndex;
@@ -97,7 +97,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         location.setLongitude(busRoute.get(0).getLon());
 
 
-        Integer stopStatus = 0;
+        stopStatus = 0;
 
         if (FirstStopIndex == null)
         {
@@ -107,7 +107,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 PrevStopIndex = 0;
                 UpdateData.prevStop=busRoute.get(PrevStopIndex);
                 UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
-                stopStatus = 2;
+                stopStatus = 1;
             }
             else
             {
@@ -127,22 +127,22 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             }
         }
 
+        UpdateData.stopStatus = stopStatus;
+        UpdateData.prevStop=busRoute.get(PrevStopIndex);
+        UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
+
         if (stopStatus!=0) //if there has been a change in bus stop
         {
-            UpdateData.stopStatus = stopStatus;
-            UpdateData.prevStop=busRoute.get(PrevStopIndex);
-            UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
-
             if (UpdateData.stopsLeft==0)
             {
                 //build a notification to alert
-                notifmsg="You are reaching in <" + Settings.getStopsToAlert() +" stops";
+                notifmsg="Yes";
                 buildNotification(notifmsg);
             }
             else if (UpdateData.stopsLeft<= Settings.getStopsToAlert())
             {
                 //build a notification to alert
-                notifmsg="Yes";
+                notifmsg="You are reaching in <" + Settings.getStopsToAlert() +" stops";
                 buildNotification(notifmsg);
                 stopSelf();// end the service once destination reached
             }
