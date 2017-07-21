@@ -107,7 +107,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         location.setLongitude(busRoute.get(0).getLon());
         */
 
-        UpdateData.stopStatus = 0;
+        Integer stopStatus = 0;
 
         if (FirstStopIndex == null)
         {
@@ -115,7 +115,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             {
                 busRoute = busRoute.subList(FirstStopIndex, busRoute.size());//trim the bus list to only include the first stop (destination stop alr trimmed)
                 PrevStopIndex = 0;
-                UpdateData.stopStatus = 4;
+                stopStatus = 4;
                 UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
                 UpdateData.prevStop=busRoute.get(PrevStopIndex);
             }
@@ -123,27 +123,25 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             else
             {
                 //journey hasnt started
-                UpdateData.stopStatus = -1;
+                stopStatus = -1;
             }
-
-
         }
         else//this is run after first stop has been found, and will keep check+updating everytime location is updated
         {
             UpdateData.prevStop=busRoute.get(PrevStopIndex);
             UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
-            UpdateData.stopStatus = updatePreviousStop(busRoute,location);// update the previous bus stop
+            stopStatus = updatePreviousStop(busRoute,location);// update the previous bus stop
 
-            if (UpdateData.stopStatus==1) //check if user has reached next stop
+            if (stopStatus==1) //check if user has reached next stop
             {
             }
-            else if (UpdateData.stopStatus==2) //user is reaching destination
+            else if (stopStatus==2) //user is reaching destination
             {
                 //build a notification to alert
                 notifmsg="You're reaching in <" + StopsTilAlert +" stops";
                 buildNotification(notifmsg);
             }
-            else if (UpdateData.stopStatus==3)//check is user has reached destination
+            else if (stopStatus==3)//check is user has reached destination
             {
                 //build a notification to alert
                 notifmsg="Yes";
@@ -152,6 +150,11 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             }
         }
         UpdateData.curLoc=location;
+
+        if (stopStatus != 0)
+        {
+            UpdateData.stopStatus=stopStatus;
+        }
         sendBroadcast(new Intent("LocationUpdated"));
 
     }

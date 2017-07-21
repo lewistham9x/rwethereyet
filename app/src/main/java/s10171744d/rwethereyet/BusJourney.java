@@ -87,6 +87,7 @@ public class BusJourney extends AppCompatActivity{
     // callback for when data is received from service using datayodatereceiver listener (theres updated data from the service)
 
     private class DataUpdateReceiver extends BroadcastReceiver { //receiver to check if theres any changes in the thing
+
         @Override
         public void onReceive(Context context, Intent intent) {  //triggered when data is sent from service
             if (intent.getAction().equals("LocationUpdated")) {
