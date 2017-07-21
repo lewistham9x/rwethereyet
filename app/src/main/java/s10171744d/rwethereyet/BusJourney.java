@@ -71,6 +71,7 @@ public class BusJourney extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        updateView();
         if (dataUpdateReceiver == null) dataUpdateReceiver = new DataUpdateReceiver();
         IntentFilter intentFilter = new IntentFilter("LocationUpdated");
         registerReceiver(dataUpdateReceiver, intentFilter);
@@ -89,71 +90,73 @@ public class BusJourney extends AppCompatActivity{
         @Override
         public void onReceive(Context context, Intent intent) {  //triggered when data is sent from service
             if (intent.getAction().equals("LocationUpdated")) {
-
-                Integer status = UpdateData.stopStatus;
-
-                //check the status of bus stop
-                if (status == 1)
-                {
-                    BusStop prevStop = UpdateData.prevStop;
-
-                    String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
-
-                    tvReachYet.setText("no");
-                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
-                    tvPrevStop.setText(stopinfo);
-
-                    ivStop.setVisibility(View.GONE);
-                }
-                else if (status == 2)
-                {
-                    BusStop prevStop = UpdateData.prevStop;
-
-                    String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
-
-                    tvReachYet.setText("soon");
-                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
-                    tvPrevStop.setText(stopinfo);
-
-                    ivStop.setVisibility(View.VISIBLE);
-
-                }
-                else if (status == 3)
-                {
-                    BusStop prevStop = UpdateData.prevStop;
-
-                    String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
-
-                    tvReachYet.setText("yes");
-                    tvStopsLeft.setText("");
-                    tvPrevStop.setText(stopinfo);
-
-                    ivStop.setVisibility(View.VISIBLE);
-
-                }
-                else if (status == 4)
-                {
-                    BusStop prevStop = UpdateData.prevStop;
-
-                    String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
-
-                    tvReachYet.setText("!!!");
-                    tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
-                    tvPrevStop.setText(stopinfo);
-
-                    ivStop.setVisibility(View.GONE);
-                }
-
-                else if (status == -1)
-                {
-                    tvReachYet.setText("...");
-                    tvStopsLeft.setText("searching for bus stop");
-                    tvPrevStop.setText("your journey will start once you are near a bus stop within your selected route");
-
-                    ivStop.setVisibility(View.GONE);
-                }
-
+                updateView();
             }
+        }
+    }
+
+    private void updateView(){
+        Integer status = UpdateData.stopStatus;
+
+        //check the status of bus stop
+        if (status == 1)
+        {
+            BusStop prevStop = UpdateData.prevStop;
+
+            String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
+
+            tvReachYet.setText("no");
+            tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
+            tvPrevStop.setText(stopinfo);
+
+            ivStop.setVisibility(View.GONE);
+        }
+        else if (status == 2)
+        {
+            BusStop prevStop = UpdateData.prevStop;
+
+            String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
+
+            tvReachYet.setText("soon");
+            tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
+            tvPrevStop.setText(stopinfo);
+
+            ivStop.setVisibility(View.VISIBLE);
+
+        }
+        else if (status == 3)
+        {
+            BusStop prevStop = UpdateData.prevStop;
+
+            String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
+
+            tvReachYet.setText("yes");
+            tvStopsLeft.setText("");
+            tvPrevStop.setText(stopinfo);
+
+            ivStop.setVisibility(View.VISIBLE);
+
+        }
+        else if (status == 4)
+        {
+            BusStop prevStop = UpdateData.prevStop;
+
+            String stopinfo = String.format("%s (%s)",prevStop.getName(),prevStop.getCode());
+
+            tvReachYet.setText("!!!");
+            tvStopsLeft.setText(UpdateData.stopsLeft +" more stops to " +UpdateData.destStop.getName());
+            tvPrevStop.setText(stopinfo);
+
+            ivStop.setVisibility(View.GONE);
+        }
+
+        else if (status == -1)
+        {
+            tvReachYet.setText("...");
+            tvStopsLeft.setText("searching for bus stop");
+            tvPrevStop.setText("your journey will start once you are near a bus stop within your selected route");
+
+            ivStop.setVisibility(View.GONE);
         }
     }
 
