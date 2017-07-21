@@ -47,10 +47,6 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     String notifmsg = "No";
 
     Integer status;
-
-
-    Integer radius = 50;//radius (in m) for detecting bus stop (change for different sensitivity)
-
     /*
         status returns an integer based on the status of the busstop update, used for returning to busjourney
         0 = no difference
@@ -60,6 +56,10 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         4 = the first stop has been found
         -1 = first stop hasnt been found
     */
+
+
+    Integer radius = 50;//radius (in m) for detecting bus stop (change for different sensitivity)
+
 
 
     // Must create a default constructor
@@ -79,7 +79,6 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         busRoute = Control.busRoute; //grab the bus stop route from the mainactivity
         UpdateData.destStop=busRoute.get(LastStopIndex); //get the data of the destination stop
         busRoute = busRoute.subList(0, LastStopIndex+1); //trim the busroute to end with destination
-
 
         startLocation();
 

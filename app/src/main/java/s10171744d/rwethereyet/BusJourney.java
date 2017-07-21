@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,14 +54,22 @@ public class BusJourney extends AppCompatActivity{
         ivStop = (ImageView) findViewById(R.id.ivStop);
 
         // check location permission
-        if (ContextCompat.checkSelfPermission(BusJourney.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(BusJourney.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
-            return;}
+        checkPermission();
+    }
+
+    private void checkPermission() //check if location permission granted, and start service if it is, if not, request for perm.
+    {
+        Boolean succ;
+        succ = (ContextCompat.checkSelfPermission(BusJourney.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED);
+        if (!succ)
         {
-
+            ActivityCompat.requestPermissions(BusJourney.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION
+            }, LOCATION_PERMISSION_ID);
+            checkPermission(); //will keep requesting for permissions until permission is granted
+        }
+        else
+        {
             //start the service if location permissions granted
-            //setupServiceReceiver();
-
             Intent i = new Intent(this, UpdateStop.class);
             startService(i);
         }
@@ -71,6 +80,7 @@ public class BusJourney extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("lc","resumed");
         updateView();
         if (dataUpdateReceiver == null) dataUpdateReceiver = new DataUpdateReceiver();
         IntentFilter intentFilter = new IntentFilter("LocationUpdated");
@@ -80,6 +90,7 @@ public class BusJourney extends AppCompatActivity{
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("lc","paused");
         if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver);
     }
 
@@ -87,10 +98,10 @@ public class BusJourney extends AppCompatActivity{
     // callback for when data is received from service using datayodatereceiver listener (theres updated data from the service)
 
     private class DataUpdateReceiver extends BroadcastReceiver { //receiver to check if theres any changes in the thing
-
         @Override
         public void onReceive(Context context, Intent intent) {  //triggered when data is sent from service
             if (intent.getAction().equals("LocationUpdated")) {
+                Log.d("status",UpdateData.stopStatus+"");
                 updateView();
             }
         }

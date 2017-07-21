@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     EditText busServiceNo;
     Button queryButton;
 
+    private static final int LOCATION_PERMISSION_ID = 1001; //setting of the location permission id
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
