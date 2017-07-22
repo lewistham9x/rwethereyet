@@ -109,6 +109,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
 
                 UpdateData.prevStop=busRoute.get(PrevStopIndex);
                 UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
+                buildNotification("bus journey started at " + busRoute.get(0).getName(),1);
             }
             else
             {
@@ -145,7 +146,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             if (UpdateData.stopsLeft==0)
             {
                 //build a notification to alert
-                notifmsg="Yes";
+                notifmsg="yes";
                 buildNotification(notifmsg,1);
             }
             else if (UpdateData.stopsLeft<= Settings.getStopsToAlert())
@@ -153,18 +154,18 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 //build a notification to alert
                 if (Settings.getStopsToAlert()==1)
                 {
-                    notifmsg="You are reaching in <" + Settings.getStopsToAlert() +" stop";
+                    notifmsg="you are reaching in <" + Settings.getStopsToAlert() +" stop";
                 }
                 else
                 {
-                    notifmsg="You are reaching in <" + Settings.getStopsToAlert() +" stops";
+                    notifmsg="you are reaching in <" + Settings.getStopsToAlert() +" stops";
                 }
                 buildNotification(notifmsg,1);
             }
             //temporary test for debugging
             else
             {
-                buildNotification("reached a stop",0);
+                buildNotification("reached " + busRoute.get(PrevStopIndex).getName(),0);
             }
         }
 
