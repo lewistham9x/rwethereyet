@@ -112,7 +112,7 @@ public class BusJourney extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("lc","resumed");
+        Log.d("E","onResume");
         updateView();
         if (dataUpdateReceiver == null) dataUpdateReceiver = new DataUpdateReceiver();
         IntentFilter intentFilter = new IntentFilter("LocationUpdated");
@@ -122,7 +122,7 @@ public class BusJourney extends AppCompatActivity{
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("lc","paused");
+        Log.d("E","onPause");
         if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver);
     }
 

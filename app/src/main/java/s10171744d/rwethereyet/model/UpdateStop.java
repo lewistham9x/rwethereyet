@@ -54,7 +54,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     public void onCreate() {
         super.onCreate();
 
-        Log.d("Event","OnCreate");
+        Log.d("E","onCreate");
         FirstStopIndex = null;
 
         LastStopIndex = Control.selectedBusIndex;
@@ -69,6 +69,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("E","onDestroy");
         stopLocation(); //for stopping the location check once service ends
     }
 
@@ -80,7 +81,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
 
     @Override
     public void onLocationUpdated(Location location) {
-        Log.d("tit","Location service is running");
+        Log.d("S","Location service is running");
 
         //for testing purposes (set the user location to be the first stop of the list)
         /*
@@ -108,7 +109,6 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
 
                 UpdateData.prevStop=busRoute.get(PrevStopIndex);
                 UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
-
             }
             else
             {
@@ -135,6 +135,10 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
         {
             UpdateData.stopStatus = stopStatus;
         }
+
+        UpdateData.curLoc=location;
+        Log.d("N","Status: "+stopStatus);
+        Log.d("TDz",location.getLatitude()+", "+location.getLongitude());
 
         if (stopStatus>0) //if there has been a change in bus stop/first stop alr found
         {
@@ -164,9 +168,10 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             }
         }
 
-        UpdateData.curLoc=location;
-        buildNotification(location.getLatitude()+","+location.getLongitude(),0);
-
+        if (stopStatus==-1)
+        {
+            buildNotification("searching for bus stop..",0);
+        }
         sendBroadcast(new Intent("LocationUpdated"));
     }
 
@@ -270,26 +275,32 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
 
     private void buildNotification(String msg,Integer type)
     {
-        Integer prio;
         if (type == 1 )//if notification type should be important (1 = important, 0 = default)
         {
-            prio = NotificationCompat.PRIORITY_HIGH;
+            PugNotification.with(this)
+                    .load()
+                    .title(notiftit)
+                    .message(msg)
+                    //.bigTextStyle(notifBTxt)
+                    .smallIcon(R.drawable.ic_notif)
+                    .largeIcon(R.mipmap.ic_launcher)
+                    .priority(Notification.PRIORITY_HIGH) //set peeking??
+                    .flags(Notification.DEFAULT_ALL)
+                    .simple()
+                    .build();
         }
         else
         {
-            prio = NotificationCompat.PRIORITY_LOW;
+            PugNotification.with(this)
+                    .load()
+                    .title(notiftit)
+                    .message(msg)
+                    //.bigTextStyle(notifBTxt)
+                    .smallIcon(R.drawable.ic_notif)
+                    .largeIcon(R.mipmap.ic_launcher)
+                    .simple()
+                    .build();
         }
-        PugNotification.with(this)
-                .load()
-                .title(notiftit)
-                .message(msg)
-                //.bigTextStyle(notifBTxt)
-                .smallIcon(R.drawable.ic_notif)
-                .largeIcon(R.mipmap.ic_launcher)
-                .priority(prio) //set peeking??
-                .flags(Notification.DEFAULT_ALL)
-                .simple()
-                .build();
     }
 
 
