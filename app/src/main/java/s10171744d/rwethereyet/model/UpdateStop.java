@@ -142,7 +142,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
             {
                 //build a notification to alert
                 notifmsg="Yes";
-                buildNotification(notifmsg);
+                buildNotification(notifmsg,1);
             }
             else if (UpdateData.stopsLeft<= Settings.getStopsToAlert())
             {
@@ -155,17 +155,17 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 {
                     notifmsg="You are reaching in <" + Settings.getStopsToAlert() +" stops";
                 }
-                buildNotification(notifmsg);
+                buildNotification(notifmsg,1);
             }
             //temporary test for debugging
             else
             {
-                buildNotification("reached a stop");
+                buildNotification("reached a stop",0);
             }
         }
 
         UpdateData.curLoc=location;
-        buildNotification(location.getLatitude()+","+location.getLongitude());
+        buildNotification(location.getLatitude()+","+location.getLongitude(),0);
 
         sendBroadcast(new Intent("LocationUpdated"));
     }
@@ -268,8 +268,17 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
     }
 
 
-    private void buildNotification(String msg)
+    private void buildNotification(String msg,Integer type)
     {
+        Integer prio;
+        if (type == 1 )//if notification type should be important (1 = important, 0 = default)
+        {
+            prio = NotificationCompat.PRIORITY_HIGH;
+        }
+        else
+        {
+            prio = NotificationCompat.PRIORITY_LOW;
+        }
         PugNotification.with(this)
                 .load()
                 .title(notiftit)
@@ -277,7 +286,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 //.bigTextStyle(notifBTxt)
                 .smallIcon(R.drawable.ic_notif)
                 .largeIcon(R.mipmap.ic_launcher)
-                .priority(NotificationCompat.PRIORITY_HIGH) //set peeking??
+                .priority(prio) //set peeking??
                 .flags(Notification.DEFAULT_ALL)
                 .simple()
                 .build();
