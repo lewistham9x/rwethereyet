@@ -124,10 +124,6 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 stopStatus = 1;
                 PrevStopIndex++;
             }
-            if (UpdateData.stopsLeft<1) //stop location checking if the stop reached is the destination stop
-            {
-                stopSelf();// end the service once destination reached
-            }
             UpdateData.prevStop=busRoute.get(PrevStopIndex);
             UpdateData.stopsLeft=countStopsAway(busRoute,PrevStopIndex);
         }
@@ -148,6 +144,7 @@ public class UpdateStop extends Service implements OnLocationUpdatedListener, On
                 //build a notification to alert
                 notifmsg="yes";
                 buildNotification(notifmsg,1);
+                stopSelf();//ends service to stop location checking if the stop reached is the destination stop
             }
             else if (UpdateData.stopsLeft<= Settings.getStopsToAlert())
             {
